@@ -14,7 +14,8 @@ public:
     static Db_handler* get_instance();
     void whenclose();
     int regist_db(const char* username, const char* password);
-    int login_db(const char* username, const char* password);
+    int login_db(const char* username, const char* password, int& gid);
+    void logout_db(const int id);
 private:
     Db_handler();
     static Db_handler* instance;

@@ -14,6 +14,7 @@ public :
 
     void regist_handler(Protocol& pdu);
     void login_handler(Protocol& pdu);
+    void logout_handler(Protocol& pdu);
 
 public slots:
     void receive_msg();

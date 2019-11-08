@@ -33,7 +33,7 @@ public:
 
     void being_caster();
     void being_audience();
-
+    virtual void closeEvent(QCloseEvent *event);
 private slots:
     void on_quit_pb_clicked();
 

@@ -20,11 +20,14 @@ public:
 
     void connect_to_server();
     static W1 &get_instance();
+    QTcpSocket& get_socket_tcp();
+    void reload_widget();
+
 
 public slots:
     void show_connect();
     void receive_msg();
-
+    void logout_fun();
 
 
 private slots:

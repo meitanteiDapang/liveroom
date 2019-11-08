@@ -7,7 +7,7 @@
 #include <string.h>
 #include <QDebug>
 
-
+static int id_global = 0;
 
 W1::W1(QWidget *parent)
     : QWidget(parent)
@@ -41,7 +41,17 @@ void W1::connect_to_server()
 {
      static W1 instance;
      return instance;
-}
+ }
+
+ QTcpSocket &W1::get_socket_tcp()
+ {
+     return m_socket_tcp;
+ }
+
+ void W1::reload_widget()
+ {
+    ui->password_le->clear();
+ }
 
 void W1::show_connect()
 {
@@ -70,6 +80,7 @@ void W1::receive_msg()
         if (pdu.result)
         {
             QMessageBox::information(this, "登录", "登录成功");
+            id_global = pdu.id;
             hide();
             W2::get_instance().show();
         }
@@ -87,6 +98,15 @@ void W1::receive_msg()
     }
 }
 
+void W1::logout_fun()
+{
+    Protocol pdu;
+    memset(&pdu, 0 ,sizeof(pdu));
+    pdu.msg_type = LOGOUT_TYPE;
+    pdu.id = id_global;
+    W1::get_instance().get_socket_tcp().write((char*)&pdu, sizeof(pdu));
+}
+
 
 void W1::on_login_pb_clicked()
 {
@@ -95,6 +115,7 @@ void W1::on_login_pb_clicked()
     if (!usr.isEmpty() && !pwd.isEmpty())
     {
         Protocol pdu;
+        memset(&pdu, 0 ,sizeof(pdu));
         pdu.msg_type = LOGIN_TYPE;
         strcpy(pdu.username, usr.toStdString().c_str());
         strcpy(pdu.password, pwd.toStdString().c_str());
@@ -114,9 +135,9 @@ void W1::on_regist_pb_clicked()
     if (!usr.isEmpty() && !pwd.isEmpty())
     {
         Protocol pdu;
-        pdu.msg_type = REGIST_TYPE;
-        strcpy(pdu.username, usr.toStdString().c_str());
-        strcpy(pdu.password, pwd.toStdString().c_str());
+        memset(&pdu, 0 ,sizeof(pdu));
+        pdu.msg_type = LOGOUT_TYPE;
+
         m_socket_tcp.write((char*)&pdu, sizeof(pdu));
         //qDebug() << ret;
     }

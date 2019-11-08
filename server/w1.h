@@ -4,6 +4,15 @@
 #include <QWidget>
 #include "my_server_tcp.h"
 #include "db_handler.h"
+#include <QVector>
+#include <QMap>
+#include "common.h"
+
+
+
+
+
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class W1; }
@@ -24,9 +33,13 @@ public:
     void update_db_status(QString msg);
 
     void add_protocol_msg(Protocol& pdu, bool mode);
+    QVector<int>& get_online_user();
 
 private:
     Ui::W1 *ui;
     My_server_tcp m_server;
+    QVector<int> m_online_user;
+    MAP m_rooms;
+
 };
 #endif // W1_H

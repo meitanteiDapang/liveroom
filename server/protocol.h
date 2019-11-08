@@ -14,7 +14,7 @@
 
 #define LOGIN_TYPE 101
 #define REGIST_TYPE 102
-
+#define LOGOUT_TYPE 103
 
 struct Protocol
 {
@@ -23,6 +23,7 @@ struct Protocol
     char password[32];
     char data[128];
     bool result;
+    int id;
 
     Protocol();
 };

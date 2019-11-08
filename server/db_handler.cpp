@@ -68,7 +68,7 @@ int Db_handler::regist_db(const char *username, const char *password)
     }
 }
 
-int Db_handler::login_db(const char *username, const char *password)
+int Db_handler::login_db(const char *username, const char *password, int& gid)
 {
     QSqlQuery query;
     QString str=QString("select * from user where username=\"%1\"").
@@ -85,13 +85,38 @@ int Db_handler::login_db(const char *username, const char *password)
         return 3; //密码错误
     }
 
-    if(0 != query.value(3)) //已登录
+    int id = query.value(0).toInt();//检测是否重复登录
+    QVector<int>::iterator iter = W1::get_instance().get_online_user().begin();
+
+    for( ;iter!=W1::get_instance().get_online_user().end(); iter++ )//已登录
     {
-        //--------------------还需要增加登录标志-------------------------
-        return 4;
+        if(id == *iter)
+        {
+            return 4;
+        }
     }
 
+    //准备登录，将在线名单放入链表中;
+    W1::get_instance().get_online_user().push_back(id);
+    gid = id;
     return 1;
+}
+
+void Db_handler::logout_db(const int id)
+{
+    QVector<int>::iterator iter = W1::get_instance().get_online_user().begin();
+    int i = 0;
+    for( ;iter!=W1::get_instance().get_online_user().end(); iter++ )//已登录
+    {
+        if(id == *iter)
+        {
+
+            W1::get_instance().get_online_user().remove(i);
+            return;
+        }
+        i++;
+    }
+    return;//不存在,不过无所谓了。
 }
 
 

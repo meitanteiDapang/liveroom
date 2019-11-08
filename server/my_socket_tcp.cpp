@@ -34,7 +34,7 @@ void My_socket_tcp::login_handler(Protocol &pdu)
 
     pdu.msg_type = LOGIN_TYPE + ADD_RETURN;
     int ret = 1;
-    ret = Db_handler::get_instance()->login_db(pdu.username, pdu.password);
+    ret = Db_handler::get_instance()->login_db(pdu.username, pdu.password, pdu.id);
 
     switch(ret)
     {
@@ -59,6 +59,11 @@ void My_socket_tcp::login_handler(Protocol &pdu)
 
 }
 
+void My_socket_tcp::logout_handler(Protocol &pdu)
+{
+    Db_handler::get_instance()->logout_db(pdu.id);
+}
+
 void My_socket_tcp::receive_msg()
 {
     Protocol pdu;
@@ -75,7 +80,10 @@ void My_socket_tcp::receive_msg()
     case LOGIN_TYPE:  //登录
         login_handler(pdu);
         break;
-    case 2:
+    case LOGOUT_TYPE:  //登录
+        logout_handler(pdu);
+        break;
+    case 10000000:
 
         break;
     default:

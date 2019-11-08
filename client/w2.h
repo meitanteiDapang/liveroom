@@ -16,6 +16,8 @@ public:
     explicit W2(QWidget *parent = nullptr);
     ~W2();
     static W2 &get_instance();
+
+    virtual void closeEvent(QCloseEvent *event);
 private slots:
     void on_refresh_pb_clicked();
 

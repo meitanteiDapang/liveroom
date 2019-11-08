@@ -46,6 +46,11 @@ void W3::being_audience()
     m_is_caster = false;
 }
 
+void W3::closeEvent(QCloseEvent *event)
+{
+    W1::get_instance().logout_fun();
+}
+
 void W3::on_quit_pb_clicked()
 {
     //还需要向服务器发送离开room

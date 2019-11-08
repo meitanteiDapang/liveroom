@@ -65,6 +65,11 @@ void W1::add_protocol_msg(Protocol &pdu, bool mode)
     }
 }
 
+QVector<int> &W1::get_online_user()
+{
+    return m_online_user;
+}
+
 
 
 
