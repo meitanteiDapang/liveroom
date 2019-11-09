@@ -244,6 +244,13 @@
             </spacer>
            </item>
            <item>
+            <widget class="QLineEdit" name="money_le">
+             <property name="dragEnabled">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
             <widget class="QPushButton" name="topup_pb">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Minimum" vsizetype="Expanding">

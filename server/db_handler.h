@@ -14,8 +14,10 @@ public:
     static Db_handler* get_instance();
     void whenclose();
     int regist_db(const char* username, const char* password);
-    int login_db(const char* username, const char* password, int& gid);
+    int login_db(const char* username, const char* password, int& gid, float& gbalance);
     void logout_db(const int id);
+    int topup_db(const int id, const float money ,float& gbalance);
+
 private:
     Db_handler();
     static Db_handler* instance;

@@ -22,7 +22,10 @@ public:
     static W1 &get_instance();
     QTcpSocket& get_socket_tcp();
     void reload_widget();
-
+    int get_id();
+    void set_id(int id);
+    char* get_username();
+    void set_username(char* username);
 
 public slots:
     void show_connect();
@@ -39,6 +42,9 @@ private:
     W1(QWidget *parent = nullptr);
     Ui::W1 *ui;
     QTcpSocket m_socket_tcp;
+    int m_id;
+    char m_username[32];
+
 };
 #endif // W1_H
 

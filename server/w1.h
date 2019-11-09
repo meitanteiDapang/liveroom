@@ -34,6 +34,11 @@ public:
 
     void add_protocol_msg(Protocol& pdu, bool mode);
     QVector<int>& get_online_user();
+    MAP& get_rooms();
+    void cancle_room(int room_id);
+
+private slots:
+    void on_pushButton_clicked();
 
 private:
     Ui::W1 *ui;

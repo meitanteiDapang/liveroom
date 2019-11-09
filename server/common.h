@@ -6,7 +6,7 @@
 
 #define IP_ADDRESS "127.0.0.1"
 #define PORT "8888"
-#define DB_PATH "/Users/yzh/Desktop/project/liveroom/liveroom.db"
+#define DB_PATH "/Users/yzh/Desktop/project/liveroom/server/liveroom.db"
 
 #define RECEIVE true
 #define SEND false

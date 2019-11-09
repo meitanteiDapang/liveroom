@@ -13,6 +13,7 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
 #include <QtWidgets/QListView>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpacerItem>
@@ -44,6 +45,7 @@ public:
     QSpacerItem *verticalSpacer;
     QPushButton *create_pb;
     QSpacerItem *verticalSpacer_3;
+    QLineEdit *money_le;
     QPushButton *topup_pb;
     QSpacerItem *verticalSpacer_2;
     QPushButton *quit_pb;
@@ -168,6 +170,12 @@ public:
         verticalSpacer_3 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
         verticalLayout->addItem(verticalSpacer_3);
+
+        money_le = new QLineEdit(W2);
+        money_le->setObjectName(QString::fromUtf8("money_le"));
+        money_le->setDragEnabled(false);
+
+        verticalLayout->addWidget(money_le);
 
         topup_pb = new QPushButton(W2);
         topup_pb->setObjectName(QString::fromUtf8("topup_pb"));

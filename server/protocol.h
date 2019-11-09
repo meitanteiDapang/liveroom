@@ -16,14 +16,30 @@
 #define REGIST_TYPE 102
 #define LOGOUT_TYPE 103
 
+#define CREATE_TYPE 201
+#define RELOAD_LIST_TYPE 202
+#define TOPUP_TYPE 203
+
+
+#define QUIT_ROOM_TYPE 302
+#define CASTER_QUIT_TYPE 303
+
+
 struct Protocol
 {
     int msg_type;
     char username[32];
     char password[32];
     char data[128];
-    bool result;
+    bool result;//is_caster??//list not end?
     int id;
+    int room_id;
+    float balance;
+    int count;
+    int num;
+    bool isevent;
+    float money;
+
 
     Protocol();
 };

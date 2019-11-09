@@ -34,8 +34,17 @@ public:
     void being_caster();
     void being_audience();
     virtual void closeEvent(QCloseEvent *event);
+    int get_room_id();
+    void set_room_id(int id);
+    bool get_is_caster();
+    QCamera* get_camera();
+
 private slots:
     void on_quit_pb_clicked();
+
+    void on_send_pb_clicked();
+
+    void on_rocket_pb_clicked();
 
 private:
     Ui::W3 *ui;
@@ -43,6 +52,7 @@ private:
     QCameraViewfinder* m_viewfinder;
     QCameraImageCapture* m_imageCapture;
     bool m_is_caster;
+    int m_room_id;//房间主播id
 
 };
 

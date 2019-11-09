@@ -7,15 +7,7 @@ W1::W1(QWidget *parent)
     , ui(new Ui::W1)
 {
     ui->setupUi(this);
-    m_server.listen(QHostAddress(IP_ADDRESS), QString(PORT).toUShort());
-    if(m_server.isListening())
-    {
-        ui->status_label->setText("监听中");
-    }
-    else
-    {
-        ui->status_label->setText("没有监听");
-    }
+
 }
 
 W1::~W1()
@@ -52,15 +44,23 @@ void W1::add_protocol_msg(Protocol &pdu, bool mode)
     if(mode)
     {
         QString data = QString("接收了,type为%1, username为%2, password为%3, "
-                               "result为%4, data为%5\n").arg(pdu.msg_type)
+                               "result为%4, data为%5,id:%6,roomid:%7,"
+                               "balance:%8, count:%9, num:%10, isevent:%11\n").arg(pdu.msg_type)
                             .arg(pdu.username).arg(pdu.password)
-                            .arg(pdu.result).arg(pdu.data);
+                            .arg(pdu.result).arg(pdu.data).arg(pdu.id)
+                            .arg(pdu.room_id).arg(double(pdu.balance)).arg(pdu.count)
+                            .arg(pdu.num).arg(pdu.isevent);
         update_msg(data);
     }
     else
     {
-        QString data = QString("发送了,type为%1"
-                               "result为%2\n").arg(pdu.msg_type).arg(pdu.result);
+        QString data = QString("-----------发送了,type为%1, username为%2, password为%3, "
+                               "result为%4, data为%5,id:%6,roomid:%7,"
+                               "balance:%8, count:%9, num:%10, isevent:%11\n").arg(pdu.msg_type)
+                            .arg(pdu.username).arg(pdu.password)
+                            .arg(pdu.result).arg(pdu.data).arg(pdu.id)
+                            .arg(pdu.room_id).arg(double(pdu.balance)).arg(pdu.count)
+                            .arg(pdu.num).arg(pdu.isevent);
         update_msg(data);
     }
 }
@@ -70,6 +70,30 @@ QVector<int> &W1::get_online_user()
     return m_online_user;
 }
 
+MAP &W1::get_rooms()
+{
+    return m_rooms;
+}
+
+void W1::cancle_room(int room_id)
+{
+    m_rooms.remove(room_id);
+}
+
+
+void W1::on_pushButton_clicked()
+{
+
+    m_server.listen(QHostAddress(ui->ip_le->text()), QString(ui->port_le->text()).toUShort());
+    if(m_server.isListening())
+    {
+        ui->status_label->setText("监听中");
+    }
+    else
+    {
+        ui->status_label->setText("没有监听");
+    }
+}
 
 
 

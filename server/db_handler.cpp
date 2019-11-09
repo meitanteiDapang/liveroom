@@ -68,7 +68,7 @@ int Db_handler::regist_db(const char *username, const char *password)
     }
 }
 
-int Db_handler::login_db(const char *username, const char *password, int& gid)
+int Db_handler::login_db(const char *username, const char *password, int& gid, float& gbalance)
 {
     QSqlQuery query;
     QString str=QString("select * from user where username=\"%1\"").
@@ -95,10 +95,12 @@ int Db_handler::login_db(const char *username, const char *password, int& gid)
             return 4;
         }
     }
-
+    //获得balance;
+    float balance = query.value(4).toFloat();
     //准备登录，将在线名单放入链表中;
     W1::get_instance().get_online_user().push_back(id);
     gid = id;
+    gbalance = balance;
     return 1;
 }
 
@@ -117,6 +119,31 @@ void Db_handler::logout_db(const int id)
         i++;
     }
     return;//不存在,不过无所谓了。
+}
+
+int Db_handler::topup_db(const int id, const float money, float &gbalance)
+{
+    QSqlQuery query;
+    QString str=QString("select * from user where id=\"%1\"").
+                    arg(id);
+    query.exec(str);
+
+    if(!query.first())//id不存在//不可能错误
+    {
+        return 2;
+    }
+
+    str=QString("update user set balance = balance + %1 where id = id").
+                        arg(double(money));
+    query.exec(str);
+
+    str=QString("select * from user where id=\"%1\"").
+                        arg(id);
+    query.exec(str);
+    query.first();
+    gbalance = query.value(4).toFloat();
+    //qDebug() << "db" << gbalance;
+    return 1;
 }
 
 

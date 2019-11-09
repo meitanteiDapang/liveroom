@@ -832,7 +832,20 @@ w1.o: ../client/w1.cpp ../client/w1.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/qhostaddress.h \
 		../client/w2.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QDebug \
-		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qdebug.h
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qdebug.h \
+		../client/w3.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtMultimedia.framework/Headers/QCamera \
+		/Applications/qt/5.13.1/clang_64/lib/QtMultimedia.framework/Headers/qcamera.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtMultimediaWidgets.framework/Headers/QCameraViewfinder \
+		/Applications/qt/5.13.1/clang_64/lib/QtMultimediaWidgets.framework/Headers/qcameraviewfinder.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtMultimedia.framework/Headers/QCameraImageCapture \
+		/Applications/qt/5.13.1/clang_64/lib/QtMultimedia.framework/Headers/qcameraimagecapture.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtMultimedia.framework/Headers/QCameraInfo \
+		/Applications/qt/5.13.1/clang_64/lib/QtMultimedia.framework/Headers/qcamerainfo.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtGui.framework/Headers/QList \
+		/Applications/qt/5.13.1/clang_64/lib/QtGui.framework/Headers/qevent.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtGui.framework/Headers/QImage \
+		/Applications/qt/5.13.1/clang_64/lib/QtGui.framework/Headers/qimage.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o w1.o ../client/w1.cpp
 
 w2.o: ../client/w2.cpp ../client/w2.h \
