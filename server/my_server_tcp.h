@@ -12,6 +12,9 @@ public:
     My_server_tcp();
 
     void incomingConnection(qintptr handle);
+    static My_server_tcp& get_instance();
+    QVector<My_socket_tcp *> get_socket_vec();
+    void to_all(Protocol& pdu);
 
 private:
     QVector<My_socket_tcp *> m_vec;

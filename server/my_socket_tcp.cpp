@@ -62,6 +62,7 @@ void My_socket_tcp::login_handler(Protocol &pdu)
 
 void My_socket_tcp::logout_handler(Protocol &pdu)
 {
+    pdu.msg_type = LOGOUT_TYPE+ADD_RETURN;
     Db_handler::get_instance()->logout_db(pdu.id);
 }
 
@@ -91,10 +92,11 @@ void My_socket_tcp::quit_room_handler(Protocol &pdu)
 {
     //qDebug() <<W1::get_instance().get_rooms().begin().key() <<  W1::get_instance().get_rooms().begin().value();
     //qDebug() << pdu.result << pdu.room_id;
-    qDebug() << pdu.isevent;
+    //qDebug() << pdu.isevent;
     if(pdu.result)//is_caster?
     {
         MAP::iterator iter = W1::get_instance().get_rooms().find(pdu.room_id);
+        int room_id = pdu.room_id;
         if(iter != W1::get_instance().get_rooms().end())//找到存在了
         {
             //qDebug() << 1 << pdu.msg_type;
@@ -107,8 +109,8 @@ void My_socket_tcp::quit_room_handler(Protocol &pdu)
                 //qDebug() << 2 << pdu.msg_type;
                 pdu.msg_type = CASTER_QUIT_TYPE+ADD_RETURN;//203
                 strcpy(pdu.data, "主播已经滚啦!!");
-                W1::get_instance().add_protocol_msg(pdu, SEND);
-                write((char*)&pdu, sizeof(pdu));
+                pdu.room_id = room_id;//告诉观众是哪个主播滚了
+                My_server_tcp::get_instance().to_all(pdu);
             }
             pdu.msg_type = QUIT_ROOM_TYPE+ADD_RETURN; //202
             //qDebug() << 3 << pdu.msg_type;
@@ -125,7 +127,18 @@ void My_socket_tcp::quit_room_handler(Protocol &pdu)
     }
     else//观众主动退出
     {
-
+        pdu.msg_type = QUIT_ROOM_TYPE+ADD_RETURN;
+        MAP::iterator iter = W1::get_instance().get_rooms().find(pdu.room_id);
+        //int room_id = pdu.room_id;
+        if(iter != W1::get_instance().get_rooms().end())//找到存在了
+        {
+            iter->removeAll(pdu.id);//OK吗
+        }
+        else
+        {
+            //不可能发生
+        }
+        pdu.result = true;
     }
 
 }
@@ -175,15 +188,123 @@ void My_socket_tcp::topup_handler(Protocol &pdu)
     }
 }
 
+void My_socket_tcp::enter_room_handler(Protocol &pdu)
+{
+    pdu.msg_type = ENTER_ROOM_TYPE+ADD_RETURN;
+    MAP::iterator iter = W1::get_instance().get_rooms().find(pdu.room_id);
+    //qDebug() << 1;
+    if(iter != W1::get_instance().get_rooms().end())//找到存在了
+    {
+        //先向房间内其他用户发布有人来了信息
+        //qDebug() << 2;
+        pdu.msg_type = GROUP_CHAT_TYPE+ADD_RETURN;
+        sprintf(pdu.data, "欢迎%s进入直播间", pdu.username);
+        strcpy(pdu.username, "system");//这两条顺序很重要，不然username会被覆盖掉
+        int room_id = pdu.room_id;//防止以后有改动，先写这
+        /*
+            这里遍历所有的socket_tcp都给他发过去，到了客户端匹配room_id，再看是否显现。
+            更好的方法是，登录的时候在服务器将socket与id匹配，不过这边由于登录登出都已经
+            写好了，就不那样写了！！！
+         */
+        //qDebug() << 3;
+
+        My_server_tcp::get_instance().to_all(pdu);
+
+
+//        QVector<My_socket_tcp* >::iterator socketit = My_server_tcp::get_instance()
+//                                        .get_socket_vec().begin();
+//        for(;socketit !=  My_server_tcp::get_instance()
+//            .get_socket_vec().end();socketit++)
+//        {
+//            qDebug() << 4;
+//            W1::get_instance().add_protocol_msg(pdu, SEND);
+//            qDebug() << 6;
+//            (*socketit)->write((char*)&pdu, sizeof(pdu));
+//        }
+
+        //qDebug() << 5;
+        memset(&pdu, 0, sizeof(pdu));
+        //最后向刚进入房间用户发送包包
+        pdu.msg_type = ENTER_ROOM_TYPE+ADD_RETURN;
+        pdu.result = true;
+        pdu.room_id = room_id;
+        iter->push_back(pdu.id);
+    }
+    else
+    {
+        pdu.result = false;
+        strcpy(pdu.data, "房间不存在，主播可能已经下播，请刷新重试");
+    }
+}
+
+void My_socket_tcp::group_chat_handler(Protocol &pdu, bool& hei)
+{
+    pdu.msg_type = GROUP_CHAT_TYPE+ADD_RETURN;
+    My_server_tcp::get_instance().to_all(pdu);
+    hei = false;
+}
+
+void My_socket_tcp::get_balance_handler(Protocol &pdu)
+{
+    pdu.msg_type = GET_BALANCE_TYPE+ADD_RETURN;
+    int ret = 1;
+    float now_balance;
+    ret = Db_handler::get_instance()->get_balance_db(pdu.id, now_balance);
+    if(ret == 1)
+    {
+        pdu.result = true;
+        pdu.balance = now_balance;
+    }
+    else
+    {
+        pdu.result = false;
+        strcpy(pdu.data, "找不到id,非法id迷之错误");
+    }
+}
+
+void My_socket_tcp::rocket_handler(Protocol &pdu)
+{
+
+
+    int ret = 1;
+    if(pdu.id == pdu.room_id)//给自己发火箭不行
+    {
+        pdu.result = false;
+        pdu.msg_type = SEND_ROCKET_TYPE+ADD_RETURN;
+        strcpy(pdu.data, "不能给自己发火箭");
+        return;
+    }
+
+    ret = Db_handler::get_instance()->rocket_db(pdu.id);
+    if(ret == 1)
+    {
+        pdu.msg_type = COMMING_ROCKET_TYPE+ADD_RETURN;
+        My_server_tcp::get_instance().to_all(pdu);
+        pdu.result = true;
+    }
+    else if(ret == 3)
+    {
+        pdu.result = false;
+        strcpy(pdu.data, "钱不够，穷逼");
+    }
+    else
+    {
+        pdu.result = false;
+        strcpy(pdu.data, "非法id，迷之错误");
+    }
+    pdu.msg_type = SEND_ROCKET_TYPE+ADD_RETURN;
+}
+
 
 void My_socket_tcp::receive_msg()
 {
     Protocol pdu;
     memset(&pdu, 0, sizeof(pdu));
-
+    bool hei;
     while(read((char*)&pdu, sizeof(pdu)))
     //qDebug() << pdu.msg_type;
     {
+        hei = true;
         W1::get_instance().add_protocol_msg(pdu, RECEIVE);
         switch (pdu.msg_type)
         {
@@ -211,22 +332,40 @@ void My_socket_tcp::receive_msg()
         case TOPUP_TYPE:
             topup_handler(pdu);
             break;
-        case 10000002:
+        case ENTER_ROOM_TYPE://观众啦
+            //qDebug() << pdu.room_id;
+            //qDebug() << pdu.username;
+            enter_room_handler(pdu);
+            break;
+        case GROUP_CHAT_TYPE:
+            group_chat_handler(pdu, hei);
+            break;
+        case GET_BALANCE_TYPE:
+            get_balance_handler(pdu);
 
             break;
-        case 10000003:
+        case SEND_ROCKET_TYPE:
+            rocket_handler(pdu);
+            break;
+        case 10000001:
 
             break;
-        case 10000004:
+        case 10000006:
 
             break;
-        case 10000005:
+        case 10000007:
+
+            break;
+        case 10000008:
 
             break;
         default:
             break;
         }
-        W1::get_instance().add_protocol_msg(pdu, SEND);
-        write((char*)&pdu, sizeof(pdu));
+        if(hei)
+        {
+            W1::get_instance().add_protocol_msg(pdu, SEND);
+            write((char*)&pdu, sizeof(pdu));
+        }
     }
 }

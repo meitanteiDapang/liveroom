@@ -17,7 +17,8 @@ public:
     int login_db(const char* username, const char* password, int& gid, float& gbalance);
     void logout_db(const int id);
     int topup_db(const int id, const float money ,float& gbalance);
-
+    int get_balance_db(const int id, float& gbalance);
+    int rocket_db(const int id);
 private:
     Db_handler();
     static Db_handler* instance;

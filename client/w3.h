@@ -38,6 +38,9 @@ public:
     void set_room_id(int id);
     bool get_is_caster();
     QCamera* get_camera();
+    void add_chat_text(QString data);
+    void clear_chat_text();
+    QCameraViewfinder* get_viewfinder();
 
 private slots:
     void on_quit_pb_clicked();

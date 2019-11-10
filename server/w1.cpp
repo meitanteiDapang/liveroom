@@ -26,7 +26,7 @@ W1 &W1::get_instance()
 
 My_server_tcp &W1::get_server_tcp()
 {
-    return m_server;
+    return My_server_tcp::get_instance();
 }
 
 void W1::update_msg(QString msg)
@@ -84,8 +84,8 @@ void W1::cancle_room(int room_id)
 void W1::on_pushButton_clicked()
 {
 
-    m_server.listen(QHostAddress(ui->ip_le->text()), QString(ui->port_le->text()).toUShort());
-    if(m_server.isListening())
+    My_server_tcp::get_instance().listen(QHostAddress(ui->ip_le->text()), QString(ui->port_le->text()).toUShort());
+    if(My_server_tcp::get_instance().isListening())
     {
         ui->status_label->setText("监听中");
     }

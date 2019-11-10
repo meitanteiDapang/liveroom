@@ -19,6 +19,10 @@ public :
     void quit_room_handler(Protocol& pdu);
     void load_list_handler(Protocol& pdu);
     void topup_handler(Protocol& pdu);
+    void enter_room_handler(Protocol& pdu);
+    void group_chat_handler(Protocol& pdu, bool& hei);
+    void get_balance_handler(Protocol& pdu);
+    void rocket_handler(Protocol& pdu);
 
 public slots:
     void receive_msg();

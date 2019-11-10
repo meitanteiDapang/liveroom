@@ -2,6 +2,7 @@
 #include "ui_w2.h"
 #include "w1.h"
 #include "w3.h"
+#include <QMessageBox>
 
 //extern int id_global;
 
@@ -88,6 +89,8 @@ void W2::set_count_list_zero()
 void W2::clear_stringlist()
 {
     m_stringlist->clear();
+    m_lm->setStringList(*m_stringlist);
+    ui->lv->setModel(m_lm);
 }
 
 void W2::reload_stringlist()
@@ -102,9 +105,24 @@ void W2::clear_money_le()
     ui->money_le->setText("");
 }
 
+void W2::update_w2()
+{
+
+}
+
+void W2::reload_balance()
+{
+    Protocol pdu;
+    memset(&pdu, 0 ,sizeof(pdu));
+    pdu.msg_type = GET_BALANCE_TYPE;
+    pdu.id = W1::get_instance().get_id();
+    W1::get_instance().get_socket_tcp().write((char*)&pdu, sizeof(pdu));
+}
+
 void W2::on_refresh_pb_clicked()
 {
     reload_stringlist();
+    reload_balance();
 }
 
 void W2::on_create_pb_clicked()
@@ -124,13 +142,20 @@ void W2::on_create_pb_clicked()
 void W2::on_topup_pb_clicked()
 {
     float money = ui->money_le->text().toFloat();
-    Protocol pdu;
-    memset(&pdu, 0 ,sizeof(pdu));
-    pdu.msg_type = TOPUP_TYPE;
-    pdu.id = W1::get_instance().get_id();
-    pdu.money = money;
-    //qDebug()<< "create_pb_clicked" << pdu.id;
-    W1::get_instance().get_socket_tcp().write((char*)&pdu, sizeof(pdu));
+    if(double(money) > 0.00001)
+    {
+        Protocol pdu;
+        memset(&pdu, 0 ,sizeof(pdu));
+        pdu.msg_type = TOPUP_TYPE;
+        pdu.id = W1::get_instance().get_id();
+        pdu.money = money;
+        //qDebug()<< "create_pb_clicked" << pdu.id;
+        W1::get_instance().get_socket_tcp().write((char*)&pdu, sizeof(pdu));
+    }
+    else
+    {
+        QMessageBox::information(this, "充值", "请输入数字");
+    }
 }
 
 void W2::on_quit_pb_clicked()
@@ -144,5 +169,16 @@ void W2::on_quit_pb_clicked()
 
 void W2::on_lv_doubleClicked(const QModelIndex &index)
 {
+    int room = index.data().toInt();
+    Protocol pdu;
+    memset(&pdu, 0 ,sizeof(pdu));
+    pdu.msg_type = ENTER_ROOM_TYPE;
+    pdu.id = W1::get_instance().get_id();
+    pdu.room_id = room;
+
+    strcpy(pdu.username, W1::get_instance().get_username());
+    //qDebug()<< "create_pb_clicked" << pdu.id;
+    //qDebug() << pdu.username;
+    W1::get_instance().get_socket_tcp().write((char*)&pdu, sizeof(pdu));
 
 }

@@ -42,7 +42,7 @@ private slots:
 
 private:
     Ui::W1 *ui;
-    My_server_tcp m_server;
+    //My_server_tcp m_server;
     QVector<int> m_online_user;
     MAP m_rooms;
 

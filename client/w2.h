@@ -29,6 +29,8 @@ public:
     void clear_stringlist();
     void reload_stringlist();
     void clear_money_le();
+    void update_w2();
+    void reload_balance();
 
 private slots:
     void on_refresh_pb_clicked();

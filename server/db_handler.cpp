@@ -133,8 +133,8 @@ int Db_handler::topup_db(const int id, const float money, float &gbalance)
         return 2;
     }
 
-    str=QString("update user set balance = balance + %1 where id = id").
-                        arg(double(money));
+    str=QString("update user set balance = balance + %1 where id = %2").
+                        arg(double(money)).arg(id);
     query.exec(str);
 
     str=QString("select * from user where id=\"%1\"").
@@ -143,6 +143,44 @@ int Db_handler::topup_db(const int id, const float money, float &gbalance)
     query.first();
     gbalance = query.value(4).toFloat();
     //qDebug() << "db" << gbalance;
+    return 1;
+}
+
+int Db_handler::get_balance_db(const int id, float &gbalance)
+{
+    QSqlQuery query;
+    QString str=QString("select * from user where id=\"%1\"").
+                    arg(id);
+    query.exec(str);
+
+    if(!query.first())//id不存在//不可能错误
+    {
+        return 2;
+    }
+
+    gbalance = query.value(4).toFloat();
+
+    return 1;
+}
+
+int Db_handler::rocket_db(const int id)
+{
+    QSqlQuery query;
+    QString str=QString("select * from user where id=\"%1\"").
+                    arg(id);
+    query.exec(str);
+
+    if(!query.first())//id不存在//不可能错误
+    {
+        return 2;
+    }
+    if(query.value(4) < 500.0f)
+    {
+        return 3; //钱不够
+    }
+    str=QString("update user set balance = balance - 500 where id=\"%1\"").
+                        arg(id);
+    query.exec(str);
     return 1;
 }
 
