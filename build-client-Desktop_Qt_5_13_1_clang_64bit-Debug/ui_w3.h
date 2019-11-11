@@ -138,7 +138,7 @@ public:
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'.AppleSystemUIFont'; font-size:13pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'.AppleSystemUIFont';\">\346\254\242\350\277\216\346\235\245\345\210\260\344\270\273\346\222\255\347\232\204\347\233\264\346\222\255\351\227\264</span></p></body></html>", nullptr));
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'.AppleSystemUIFont';\"><br /></p></body></html>", nullptr));
         send_pb->setText(QCoreApplication::translate("W3", "\345\217\221\351\200\201", nullptr));
         rocket_pb->setText(QCoreApplication::translate("W3", "\347\201\253\347\256\255/500", nullptr));
         quit_pb->setText(QCoreApplication::translate("W3", "\351\200\200\345\207\272", nullptr));

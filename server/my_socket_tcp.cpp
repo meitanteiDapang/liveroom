@@ -81,6 +81,7 @@ void My_socket_tcp::create_handler(Protocol &pdu)
     {
         pdu.result = true;
         pdu.room_id = pdu.id;
+        //strcpy(pdu.roomname, pdu.roomname);
         QVector<int> here;
         here.push_back(pdu.id);
         W1::get_instance().get_rooms().insert(pdu.id, here);
@@ -229,6 +230,7 @@ void My_socket_tcp::enter_room_handler(Protocol &pdu)
         pdu.result = true;
         pdu.room_id = room_id;
         iter->push_back(pdu.id);
+        Db_handler::get_instance()->get_roomname_by_id(pdu.room_id, pdu.roomname);
     }
     else
     {

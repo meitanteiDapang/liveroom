@@ -72,7 +72,9 @@ void W2::insert_lv(QString ddd)
 //    ui->lv->edit(index);
     *m_stringlist << ddd;
     m_lm->setStringList(*m_stringlist);
+    ui->lv->setModelColumn(1);
     ui->lv->setModel(m_lm);
+    //ui->lv->setModelColumn(1);
 
 }
 
@@ -133,6 +135,7 @@ void W2::on_create_pb_clicked()
     memset(&pdu, 0 ,sizeof(pdu));
     pdu.msg_type = CREATE_TYPE;
     pdu.id = W1::get_instance().get_id();
+    strcpy(pdu.roomname, W1::get_instance().get_username());
     //qDebug()<< "create_pb_clicked" << pdu.id;
     W1::get_instance().get_socket_tcp().write((char*)&pdu, sizeof(pdu));
 

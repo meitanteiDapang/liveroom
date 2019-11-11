@@ -108,6 +108,21 @@ QCameraViewfinder *W3::get_viewfinder()
     return m_viewfinder;
 }
 
+QString W3::get_room_name()
+{
+    return m_room_name;
+}
+
+void W3::set_room_name(QString room_name)
+{
+    m_room_name = room_name;
+}
+
+void W3::add_room_name_test(QString room_name)
+{
+    ui->msg_tb->append(QString("欢迎来到")+room_name+QString("的直播间"));
+}
+
 void W3::on_quit_pb_clicked()
 {
     //向服务器发送离开room

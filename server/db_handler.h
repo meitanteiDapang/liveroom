@@ -19,6 +19,9 @@ public:
     int topup_db(const int id, const float money ,float& gbalance);
     int get_balance_db(const int id, float& gbalance);
     int rocket_db(const int id);
+    int get_roomname_by_id(const int id, char* username);
+
+
 private:
     Db_handler();
     static Db_handler* instance;

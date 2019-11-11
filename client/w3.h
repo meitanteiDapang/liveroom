@@ -41,6 +41,9 @@ public:
     void add_chat_text(QString data);
     void clear_chat_text();
     QCameraViewfinder* get_viewfinder();
+    QString get_room_name();
+    void set_room_name(QString room_name);
+    void add_room_name_test(QString room_name);
 
 private slots:
     void on_quit_pb_clicked();
@@ -56,6 +59,7 @@ private:
     QCameraImageCapture* m_imageCapture;
     bool m_is_caster;
     int m_room_id;//房间主播id
+    QString m_room_name;
 
 };
 

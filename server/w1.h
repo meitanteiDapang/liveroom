@@ -46,5 +46,6 @@ private:
     QVector<int> m_online_user;
     MAP m_rooms;
 
+
 };
 #endif // W1_H

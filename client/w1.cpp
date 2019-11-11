@@ -120,10 +120,13 @@ void W1::receive_msg()
             {
                 W3::get_instance().being_caster();
                 W3::get_instance().set_room_id(pdu.room_id);
+                W3::get_instance().set_room_name(QString(pdu.roomname));
+                W3::get_instance().setWindowTitle(QString(pdu.roomname)+QString("的直播间"));
                 W3::get_instance().show();
                 W2::get_instance().hide();
                 W3::get_instance().start_camera_selfie();
                 W3::get_instance().get_viewfinder()->show();
+
 
                 //直播推流相关
             }
@@ -217,7 +220,10 @@ void W1::receive_msg()
 
                 //直播相关启动收流
                 W3::get_instance().being_audience();
+                W3::get_instance().set_room_name(QString(pdu.roomname));
                 W3::get_instance().set_room_id(pdu.room_id);
+                W3::get_instance().add_room_name_test(QString(pdu.roomname));
+                W3::get_instance().setWindowTitle(QString(pdu.roomname)+QString("的直播间"));
                 W3::get_instance().show();
             }
             else//不允许进入

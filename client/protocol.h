@@ -30,6 +30,7 @@ struct Protocol
 {
     int msg_type;
     char username[32];
+    char roomname[32];
     char password[32];
     char data[128];
     bool result;//is_caster?//list not end?

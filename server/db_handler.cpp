@@ -1,6 +1,7 @@
 #include "db_handler.h"
 #include "w1.h"
 #include <QDebug>
+#include <string.h>
 
 Db_handler::Db_handler()
 {
@@ -181,6 +182,20 @@ int Db_handler::rocket_db(const int id)
     str=QString("update user set balance = balance - 500 where id=\"%1\"").
                         arg(id);
     query.exec(str);
+    return 1;
+}
+
+int Db_handler::get_roomname_by_id(const int id, char *username)
+{
+    QSqlQuery query;
+    QString str=QString("select * from user where id=\"%1\"").
+                    arg(id);
+    query.exec(str);
+    if(!query.first())//id不存在//不可能错误
+    {
+        return 2;
+    }
+    strcpy(username, (query.value(1).toString().toStdString().c_str()));
     return 1;
 }
 
