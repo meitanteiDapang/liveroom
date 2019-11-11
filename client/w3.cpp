@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <QWaitCondition>
 #include <QMessageBox>
+
 //extern int id_global;
 
 W3::W3(QWidget *parent) :
@@ -55,6 +56,26 @@ void W3::closeEvent(QCloseEvent *event)
     event = slience;
 
 
+
+    //断开直播
+    if(m_is_caster)
+    {
+        W3::get_instance().get_thread().exit();
+        if(!W3::get_instance().get_thread().wait(1))
+        {
+            W3::get_instance().get_thread().terminate();
+            W3::get_instance().get_thread().wait();
+        }
+    }
+
+    //告诉UDP 爷走了， 把爷删了
+    Udp_pro updu;
+    memset(&updu, 0, sizeof(Udp_pro));
+    updu.id = W1::get_instance().get_id();
+    updu.is_getout = true;
+    W3::get_instance().send_udp_to_server(&updu);
+
+    //告诉服务器，登出
     Protocol pdu;
     memset(&pdu, 0 ,sizeof(pdu));
     pdu.msg_type = QUIT_ROOM_TYPE;
@@ -123,6 +144,33 @@ void W3::add_room_name_test(QString room_name)
     ui->msg_tb->append(QString("欢迎来到")+room_name+QString("的直播间"));
 }
 
+void W3::send_udp_to_server(Udp_pro* updu)
+{
+    //qDebug() << "send"<< updu->id;
+    Udp_socket::get_instance().get_udp_socket().writeDatagram((char*)(updu), sizeof(Udp_pro),
+                                                              QHostAddress(IP_ADDRESS), QString(UDPPORT).toUShort());
+}
+
+My_thread &W3::get_thread()
+{
+    return m_thread;
+}
+
+My_thread_audience &W3::get_thread_audience()
+{
+    return m_thread_audience;
+}
+
+My_thread_audience_read &W3::get_thread_audience_read()
+{
+    return m_thread_audience_read;
+}
+
+void W3::show_live_data(Udp_pro& updu)
+{
+    add_chat_text(QString("%1").arg(updu.id));
+}
+
 void W3::on_quit_pb_clicked()
 {
     //向服务器发送离开room
@@ -134,6 +182,27 @@ void W3::on_quit_pb_clicked()
     pdu.room_id = m_room_id;
     pdu.isevent = false;
     W1::get_instance().get_socket_tcp().write((char*)&pdu, sizeof(pdu));
+
+
+
+    //杀死线程
+    if(m_is_caster)
+    {
+        W3::get_instance().get_thread().exit();
+        if(!W3::get_instance().get_thread().wait(1))
+        {
+            W3::get_instance().get_thread().terminate();
+            W3::get_instance().get_thread().wait();
+        }
+    }
+    //告诉UDP 爷走了， 把爷删了
+    Udp_pro updu;
+    memset(&updu, 0, sizeof(Udp_pro));
+    updu.id = W1::get_instance().get_id();
+    updu.is_getout = true;
+    W3::get_instance().send_udp_to_server(&updu);
+
+    W3::get_instance().clear_chat_text();
 
 }
 

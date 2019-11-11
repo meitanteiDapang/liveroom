@@ -26,6 +26,7 @@ public:
     void set_id(int id);
     char* get_username();
     void set_username(char* username);
+    void tell_udp_i_am_in();
 
 public slots:
     void show_connect();

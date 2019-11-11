@@ -12,8 +12,10 @@
 #include <QList>
 #include <QDebug>
 #include <QImage>
-
-
+#include "udp_socket.h"
+#include <my_thread.h>
+#include <my_thread_audience.h>
+#include <my_thread_audience_read.h>
 
 namespace Ui {
 class W3;
@@ -45,6 +47,11 @@ public:
     void set_room_name(QString room_name);
     void add_room_name_test(QString room_name);
 
+    void send_udp_to_server(Udp_pro* updu);
+    My_thread& get_thread();
+    My_thread_audience& get_thread_audience();
+    My_thread_audience_read& get_thread_audience_read();
+    void show_live_data(Udp_pro& updu);
 private slots:
     void on_quit_pb_clicked();
 
@@ -60,6 +67,9 @@ private:
     bool m_is_caster;
     int m_room_id;//房间主播id
     QString m_room_name;
+    My_thread m_thread;
+    My_thread_audience m_thread_audience;
+    My_thread_audience_read m_thread_audience_read;
 
 };
 

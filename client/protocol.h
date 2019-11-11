@@ -46,4 +46,21 @@ struct Protocol
     Protocol();
 };
 
+
+
+
+
+
+struct Udp_pro
+{
+    char username[32];
+    int room_id;
+    int id;
+    bool is_caster;
+    bool is_getout;
+};
+
+
+
+
 #endif // PROTOCOL_H

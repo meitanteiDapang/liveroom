@@ -7,6 +7,7 @@
 #include <QVector>
 #include <QMap>
 #include "common.h"
+#include "udp_socket.h"
 
 
 

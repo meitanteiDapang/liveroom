@@ -93,6 +93,22 @@ void W1::on_pushButton_clicked()
     {
         ui->status_label->setText("没有监听");
     }
+
+    QString ip = ui->ip_le->text();
+    QString port = ui->port_le_2->text();
+    bool ret = false;
+    if(!ip.isEmpty() && !port.isEmpty())
+    {
+        ret = Udp_socket::get_instance().get_udp_socket().bind(QHostAddress(ip), port.toUShort());
+    }
+    if(ret)
+    {
+        ui->udp_label->setText("已经绑定");
+    }
+    else
+    {
+        ui->udp_label->setText("绑定失败");
+    }
 }
 
 

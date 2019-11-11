@@ -6,6 +6,7 @@
 #include "w2.h"
 #include <string.h>
 #include <QDebug>
+#include <udp_socket_audience.h>
 
 #include "w3.h"
 
@@ -71,7 +72,22 @@ void W1::connect_to_server()
 
  void W1::set_username(char* username)
  {
-    strcpy(m_username, username);
+     strcpy(m_username, username);
+ }
+
+ void W1::tell_udp_i_am_in()
+ {
+     Udp_pro updu;
+     memset(&updu, 0, sizeof(Udp_pro));
+     updu.id = W1::get_instance().get_id();
+     updu.room_id = W3::get_instance().get_room_id();
+     strcpy(updu.username, W1::get_instance().get_username());
+     updu.is_caster = false;
+     updu.is_getout = false;
+     Udp_socket_audience::get_instance().get_udp_socket().writeDatagram((char*)(&updu), sizeof(Udp_pro),
+                                                               QHostAddress(IP_ADDRESS), QString(UDPPORT).toUShort());
+     //W3::get_instance().send_udp_to_server(&updu);
+     //qDebug() << "audience ready" << updu.id << updu.room_id << updu.is_caster;
  }
 
 
@@ -129,6 +145,7 @@ void W1::receive_msg()
 
 
                 //直播推流相关
+                W3::get_instance().get_thread().start();
             }
             else
             {
@@ -224,6 +241,10 @@ void W1::receive_msg()
                 W3::get_instance().set_room_id(pdu.room_id);
                 W3::get_instance().add_room_name_test(QString(pdu.roomname));
                 W3::get_instance().setWindowTitle(QString(pdu.roomname)+QString("的直播间"));
+
+                //等tcp告诉我oK了，我要告诉udp老子进来了
+                tell_udp_i_am_in();
+
                 W3::get_instance().show();
             }
             else//不允许进入

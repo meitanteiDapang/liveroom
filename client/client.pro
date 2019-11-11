@@ -18,14 +18,24 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     common.cpp \
     main.cpp \
+    my_thread.cpp \
+    my_thread_audience.cpp \
+    my_thread_audience_read.cpp \
     protocol.cpp \
+    udp_socket.cpp \
+    udp_socket_audience.cpp \
     w1.cpp \
     w2.cpp \
     w3.cpp
 
 HEADERS += \
     common.h \
+    my_thread.h \
+    my_thread_audience.h \
+    my_thread_audience_read.h \
     protocol.h \
+    udp_socket.h \
+    udp_socket_audience.h \
     w1.h \
     w2.h \
     w3.h

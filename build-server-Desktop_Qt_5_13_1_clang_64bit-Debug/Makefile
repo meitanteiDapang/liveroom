@@ -57,19 +57,27 @@ SOURCES       = ../server/common.cpp \
 		../server/main.cpp \
 		../server/my_server_tcp.cpp \
 		../server/my_socket_tcp.cpp \
+		../server/my_thread.cpp \
 		../server/protocol.cpp \
+		../server/udp_socket.cpp \
 		../server/w1.cpp moc_my_server_tcp.cpp \
 		moc_my_socket_tcp.cpp \
+		moc_my_thread.cpp \
+		moc_udp_socket.cpp \
 		moc_w1.cpp
 OBJECTS       = common.o \
 		db_handler.o \
 		main.o \
 		my_server_tcp.o \
 		my_socket_tcp.o \
+		my_thread.o \
 		protocol.o \
+		udp_socket.o \
 		w1.o \
 		moc_my_server_tcp.o \
 		moc_my_socket_tcp.o \
+		moc_my_thread.o \
+		moc_udp_socket.o \
 		moc_w1.o
 DIST          = /Applications/qt/5.13.1/clang_64/mkspecs/features/spec_pre.prf \
 		/Applications/qt/5.13.1/clang_64/mkspecs/qdevice.pri \
@@ -221,6 +229,7 @@ DIST          = /Applications/qt/5.13.1/clang_64/mkspecs/features/spec_pre.prf \
 		/Applications/qt/5.13.1/clang_64/mkspecs/features/qt_config.prf \
 		/Applications/qt/5.13.1/clang_64/mkspecs/macx-clang/qmake.conf \
 		/Applications/qt/5.13.1/clang_64/mkspecs/features/spec_post.prf \
+		../server/.qmake.stash \
 		/Applications/qt/5.13.1/clang_64/mkspecs/features/exclusive_builds.prf \
 		/Applications/qt/5.13.1/clang_64/mkspecs/features/mac/sdk.prf \
 		/Applications/qt/5.13.1/clang_64/mkspecs/features/toolchain.prf \
@@ -252,13 +261,17 @@ DIST          = /Applications/qt/5.13.1/clang_64/mkspecs/features/spec_pre.prf \
 		../server/db_handler.h \
 		../server/my_server_tcp.h \
 		../server/my_socket_tcp.h \
+		../server/my_thread.h \
 		../server/protocol.h \
+		../server/udp_socket.h \
 		../server/w1.h ../server/common.cpp \
 		../server/db_handler.cpp \
 		../server/main.cpp \
 		../server/my_server_tcp.cpp \
 		../server/my_socket_tcp.cpp \
+		../server/my_thread.cpp \
 		../server/protocol.cpp \
+		../server/udp_socket.cpp \
 		../server/w1.cpp
 QMAKE_TARGET  = server
 DESTDIR       = 
@@ -432,6 +445,7 @@ Makefile: ../server/server.pro /Applications/qt/5.13.1/clang_64/mkspecs/macx-cla
 		/Applications/qt/5.13.1/clang_64/mkspecs/features/qt_config.prf \
 		/Applications/qt/5.13.1/clang_64/mkspecs/macx-clang/qmake.conf \
 		/Applications/qt/5.13.1/clang_64/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		/Applications/qt/5.13.1/clang_64/mkspecs/features/exclusive_builds.prf \
 		/Applications/qt/5.13.1/clang_64/mkspecs/features/mac/sdk.prf \
 		/Applications/qt/5.13.1/clang_64/mkspecs/features/toolchain.prf \
@@ -616,6 +630,7 @@ Makefile: ../server/server.pro /Applications/qt/5.13.1/clang_64/mkspecs/macx-cla
 /Applications/qt/5.13.1/clang_64/mkspecs/features/qt_config.prf:
 /Applications/qt/5.13.1/clang_64/mkspecs/macx-clang/qmake.conf:
 /Applications/qt/5.13.1/clang_64/mkspecs/features/spec_post.prf:
+.qmake.stash:
 /Applications/qt/5.13.1/clang_64/mkspecs/features/exclusive_builds.prf:
 /Applications/qt/5.13.1/clang_64/mkspecs/features/mac/sdk.prf:
 /Applications/qt/5.13.1/clang_64/mkspecs/features/toolchain.prf:
@@ -679,8 +694,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /Applications/qt/5.13.1/clang_64/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../server/common.h ../server/db_handler.h ../server/my_server_tcp.h ../server/my_socket_tcp.h ../server/protocol.h ../server/w1.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../server/common.cpp ../server/db_handler.cpp ../server/main.cpp ../server/my_server_tcp.cpp ../server/my_socket_tcp.cpp ../server/protocol.cpp ../server/w1.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../server/common.h ../server/db_handler.h ../server/my_server_tcp.h ../server/my_socket_tcp.h ../server/my_thread.h ../server/protocol.h ../server/udp_socket.h ../server/w1.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../server/common.cpp ../server/db_handler.cpp ../server/main.cpp ../server/my_server_tcp.cpp ../server/my_socket_tcp.cpp ../server/my_thread.cpp ../server/protocol.cpp ../server/udp_socket.cpp ../server/w1.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../server/w1.ui $(DISTDIR)/
 
 
@@ -691,6 +706,7 @@ clean: compiler_clean
 
 distclean: clean 
 	-$(DEL_FILE) -r server.app
+	-$(DEL_FILE) .qmake.stash
 	-$(DEL_FILE) Makefile
 
 
@@ -715,9 +731,9 @@ compiler_moc_predefs_clean:
 moc_predefs.h: /Applications/qt/5.13.1/clang_64/mkspecs/features/data/dummy.cpp
 	/library/Developer/CommandLineTools/usr/bin/clang++ -pipe -stdlib=libc++ -g -std=gnu++11 $(EXPORT_ARCH_ARGS) -isysroot /library/Developer/CommandLineTools/SDKs/MacOSX.sdk -mmacosx-version-min=10.12 -Wall -W -dM -E -o moc_predefs.h /Applications/qt/5.13.1/clang_64/mkspecs/features/data/dummy.cpp
 
-compiler_moc_header_make_all: moc_my_server_tcp.cpp moc_my_socket_tcp.cpp moc_w1.cpp
+compiler_moc_header_make_all: moc_my_server_tcp.cpp moc_my_socket_tcp.cpp moc_my_thread.cpp moc_udp_socket.cpp moc_w1.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_my_server_tcp.cpp moc_my_socket_tcp.cpp moc_w1.cpp
+	-$(DEL_FILE) moc_my_server_tcp.cpp moc_my_socket_tcp.cpp moc_my_thread.cpp moc_udp_socket.cpp moc_w1.cpp
 moc_my_server_tcp.cpp: ../server/my_server_tcp.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/QTcpServer \
 		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/qtcpserver.h \
@@ -726,8 +742,12 @@ moc_my_server_tcp.cpp: ../server/my_server_tcp.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/qtcpsocket.h \
 		../server/protocol.h \
 		../server/common.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QMap \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qmap.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QVector \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qvector.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QDebug \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qdebug.h \
 		moc_predefs.h \
 		/Applications/qt/5.13.1/clang_64/bin/moc
 	/Applications/qt/5.13.1/clang_64/bin/moc $(DEFINES) --include /Users/yzh/Desktop/project/liveroom/build-server-Desktop_Qt_5_13_1_clang_64bit-Debug/moc_predefs.h -I/Applications/qt/5.13.1/clang_64/mkspecs/macx-clang -I/Users/yzh/Desktop/project/liveroom/server -I/Applications/qt/5.13.1/clang_64/lib/QtWidgets.framework/Headers -I/Applications/qt/5.13.1/clang_64/lib/QtGui.framework/Headers -I/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers -I/Applications/qt/5.13.1/clang_64/lib/QtSql.framework/Headers -I/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers -I. -I/library/Developer/CommandLineTools/usr/include/c++/v1 -I/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/include -I/Library/Developer/CommandLineTools/usr/include -I/library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -F/Applications/qt/5.13.1/clang_64/lib ../server/my_server_tcp.h -o moc_my_server_tcp.cpp
@@ -737,9 +757,33 @@ moc_my_socket_tcp.cpp: ../server/my_socket_tcp.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/qtcpsocket.h \
 		../server/protocol.h \
 		../server/common.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QMap \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qmap.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QVector \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qvector.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QDebug \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qdebug.h \
 		moc_predefs.h \
 		/Applications/qt/5.13.1/clang_64/bin/moc
 	/Applications/qt/5.13.1/clang_64/bin/moc $(DEFINES) --include /Users/yzh/Desktop/project/liveroom/build-server-Desktop_Qt_5_13_1_clang_64bit-Debug/moc_predefs.h -I/Applications/qt/5.13.1/clang_64/mkspecs/macx-clang -I/Users/yzh/Desktop/project/liveroom/server -I/Applications/qt/5.13.1/clang_64/lib/QtWidgets.framework/Headers -I/Applications/qt/5.13.1/clang_64/lib/QtGui.framework/Headers -I/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers -I/Applications/qt/5.13.1/clang_64/lib/QtSql.framework/Headers -I/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers -I. -I/library/Developer/CommandLineTools/usr/include/c++/v1 -I/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/include -I/Library/Developer/CommandLineTools/usr/include -I/library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -F/Applications/qt/5.13.1/clang_64/lib ../server/my_socket_tcp.h -o moc_my_socket_tcp.cpp
+
+moc_my_thread.cpp: ../server/my_thread.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QThread \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qthread.h \
+		moc_predefs.h \
+		/Applications/qt/5.13.1/clang_64/bin/moc
+	/Applications/qt/5.13.1/clang_64/bin/moc $(DEFINES) --include /Users/yzh/Desktop/project/liveroom/build-server-Desktop_Qt_5_13_1_clang_64bit-Debug/moc_predefs.h -I/Applications/qt/5.13.1/clang_64/mkspecs/macx-clang -I/Users/yzh/Desktop/project/liveroom/server -I/Applications/qt/5.13.1/clang_64/lib/QtWidgets.framework/Headers -I/Applications/qt/5.13.1/clang_64/lib/QtGui.framework/Headers -I/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers -I/Applications/qt/5.13.1/clang_64/lib/QtSql.framework/Headers -I/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers -I. -I/library/Developer/CommandLineTools/usr/include/c++/v1 -I/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/include -I/Library/Developer/CommandLineTools/usr/include -I/library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -F/Applications/qt/5.13.1/clang_64/lib ../server/my_thread.h -o moc_my_thread.cpp
+
+moc_udp_socket.cpp: ../server/udp_socket.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtWidgets.framework/Headers/QWidget \
+		/Applications/qt/5.13.1/clang_64/lib/QtWidgets.framework/Headers/qwidget.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/QUdpSocket \
+		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/qudpsocket.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QVector \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qvector.h \
+		moc_predefs.h \
+		/Applications/qt/5.13.1/clang_64/bin/moc
+	/Applications/qt/5.13.1/clang_64/bin/moc $(DEFINES) --include /Users/yzh/Desktop/project/liveroom/build-server-Desktop_Qt_5_13_1_clang_64bit-Debug/moc_predefs.h -I/Applications/qt/5.13.1/clang_64/mkspecs/macx-clang -I/Users/yzh/Desktop/project/liveroom/server -I/Applications/qt/5.13.1/clang_64/lib/QtWidgets.framework/Headers -I/Applications/qt/5.13.1/clang_64/lib/QtGui.framework/Headers -I/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers -I/Applications/qt/5.13.1/clang_64/lib/QtSql.framework/Headers -I/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers -I. -I/library/Developer/CommandLineTools/usr/include/c++/v1 -I/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/include -I/Library/Developer/CommandLineTools/usr/include -I/library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -F/Applications/qt/5.13.1/clang_64/lib ../server/udp_socket.h -o moc_udp_socket.cpp
 
 moc_w1.cpp: ../server/w1.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtWidgets.framework/Headers/QWidget \
@@ -752,8 +796,12 @@ moc_w1.cpp: ../server/w1.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/qtcpsocket.h \
 		../server/protocol.h \
 		../server/common.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QMap \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qmap.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QVector \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qvector.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QDebug \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qdebug.h \
 		../server/db_handler.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtSql.framework/Headers/QSqlDatabase \
 		/Applications/qt/5.13.1/clang_64/lib/QtSql.framework/Headers/qsqldatabase.h \
@@ -761,6 +809,9 @@ moc_w1.cpp: ../server/w1.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtSql.framework/Headers/qsqlquery.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtSql.framework/Headers/QSqlError \
 		/Applications/qt/5.13.1/clang_64/lib/QtSql.framework/Headers/qsqlerror.h \
+		../server/udp_socket.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/QUdpSocket \
+		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/qudpsocket.h \
 		moc_predefs.h \
 		/Applications/qt/5.13.1/clang_64/bin/moc
 	/Applications/qt/5.13.1/clang_64/bin/moc $(DEFINES) --include /Users/yzh/Desktop/project/liveroom/build-server-Desktop_Qt_5_13_1_clang_64bit-Debug/moc_predefs.h -I/Applications/qt/5.13.1/clang_64/mkspecs/macx-clang -I/Users/yzh/Desktop/project/liveroom/server -I/Applications/qt/5.13.1/clang_64/lib/QtWidgets.framework/Headers -I/Applications/qt/5.13.1/clang_64/lib/QtGui.framework/Headers -I/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers -I/Applications/qt/5.13.1/clang_64/lib/QtSql.framework/Headers -I/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers -I. -I/library/Developer/CommandLineTools/usr/include/c++/v1 -I/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/include -I/Library/Developer/CommandLineTools/usr/include -I/library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -F/Applications/qt/5.13.1/clang_64/lib ../server/w1.h -o moc_w1.cpp
@@ -788,7 +839,11 @@ compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean compiler_ui
 
 ####### Compile
 
-common.o: ../server/common.cpp ../server/common.h
+common.o: ../server/common.cpp ../server/common.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QMap \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qmap.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QVector \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qvector.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o common.o ../server/common.cpp
 
 db_handler.o: ../server/db_handler.cpp ../server/db_handler.h \
@@ -809,10 +864,15 @@ db_handler.o: ../server/db_handler.cpp ../server/db_handler.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/qtcpsocket.h \
 		../server/protocol.h \
 		../server/common.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QMap \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qmap.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QVector \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qvector.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QDebug \
-		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qdebug.h
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qdebug.h \
+		../server/udp_socket.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/QUdpSocket \
+		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/qudpsocket.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o db_handler.o ../server/db_handler.cpp
 
 main.o: ../server/main.cpp ../server/w1.h \
@@ -826,8 +886,12 @@ main.o: ../server/main.cpp ../server/w1.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/qtcpsocket.h \
 		../server/protocol.h \
 		../server/common.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QMap \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qmap.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QVector \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qvector.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QDebug \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qdebug.h \
 		../server/db_handler.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtSql.framework/Headers/QSqlDatabase \
 		/Applications/qt/5.13.1/clang_64/lib/QtSql.framework/Headers/qsqldatabase.h \
@@ -835,6 +899,9 @@ main.o: ../server/main.cpp ../server/w1.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtSql.framework/Headers/qsqlquery.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtSql.framework/Headers/QSqlError \
 		/Applications/qt/5.13.1/clang_64/lib/QtSql.framework/Headers/qsqlerror.h \
+		../server/udp_socket.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/QUdpSocket \
+		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/qudpsocket.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtWidgets.framework/Headers/QApplication \
 		/Applications/qt/5.13.1/clang_64/lib/QtWidgets.framework/Headers/qapplication.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../server/main.cpp
@@ -847,8 +914,25 @@ my_server_tcp.o: ../server/my_server_tcp.cpp ../server/my_server_tcp.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/qtcpsocket.h \
 		../server/protocol.h \
 		../server/common.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QMap \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qmap.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QVector \
-		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qvector.h
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qvector.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QDebug \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qdebug.h \
+		../server/w1.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtWidgets.framework/Headers/QWidget \
+		/Applications/qt/5.13.1/clang_64/lib/QtWidgets.framework/Headers/qwidget.h \
+		../server/db_handler.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtSql.framework/Headers/QSqlDatabase \
+		/Applications/qt/5.13.1/clang_64/lib/QtSql.framework/Headers/qsqldatabase.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtSql.framework/Headers/QSqlQuery \
+		/Applications/qt/5.13.1/clang_64/lib/QtSql.framework/Headers/qsqlquery.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtSql.framework/Headers/QSqlError \
+		/Applications/qt/5.13.1/clang_64/lib/QtSql.framework/Headers/qsqlerror.h \
+		../server/udp_socket.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/QUdpSocket \
+		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/qudpsocket.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o my_server_tcp.o ../server/my_server_tcp.cpp
 
 my_socket_tcp.o: ../server/my_socket_tcp.cpp ../server/my_socket_tcp.h \
@@ -856,26 +940,53 @@ my_socket_tcp.o: ../server/my_socket_tcp.cpp ../server/my_socket_tcp.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/qtcpsocket.h \
 		../server/protocol.h \
 		../server/common.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QMap \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qmap.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QVector \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qvector.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QDebug \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qdebug.h \
 		../server/w1.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtWidgets.framework/Headers/QWidget \
 		/Applications/qt/5.13.1/clang_64/lib/QtWidgets.framework/Headers/qwidget.h \
 		../server/my_server_tcp.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/QTcpServer \
 		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/qtcpserver.h \
-		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QVector \
-		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qvector.h \
 		../server/db_handler.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtSql.framework/Headers/QSqlDatabase \
 		/Applications/qt/5.13.1/clang_64/lib/QtSql.framework/Headers/qsqldatabase.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtSql.framework/Headers/QSqlQuery \
 		/Applications/qt/5.13.1/clang_64/lib/QtSql.framework/Headers/qsqlquery.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtSql.framework/Headers/QSqlError \
-		/Applications/qt/5.13.1/clang_64/lib/QtSql.framework/Headers/qsqlerror.h
+		/Applications/qt/5.13.1/clang_64/lib/QtSql.framework/Headers/qsqlerror.h \
+		../server/udp_socket.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/QUdpSocket \
+		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/qudpsocket.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o my_socket_tcp.o ../server/my_socket_tcp.cpp
 
+my_thread.o: ../server/my_thread.cpp ../server/my_thread.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QThread \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qthread.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o my_thread.o ../server/my_thread.cpp
+
 protocol.o: ../server/protocol.cpp ../server/protocol.h \
-		../server/common.h
+		../server/common.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QMap \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qmap.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QVector \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qvector.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QDebug \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qdebug.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o protocol.o ../server/protocol.cpp
+
+udp_socket.o: ../server/udp_socket.cpp ../server/udp_socket.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtWidgets.framework/Headers/QWidget \
+		/Applications/qt/5.13.1/clang_64/lib/QtWidgets.framework/Headers/qwidget.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/QUdpSocket \
+		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/qudpsocket.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QVector \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qvector.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o udp_socket.o ../server/udp_socket.cpp
 
 w1.o: ../server/w1.cpp ../server/w1.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtWidgets.framework/Headers/QWidget \
@@ -888,8 +999,12 @@ w1.o: ../server/w1.cpp ../server/w1.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/qtcpsocket.h \
 		../server/protocol.h \
 		../server/common.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QMap \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qmap.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QVector \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qvector.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QDebug \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qdebug.h \
 		../server/db_handler.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtSql.framework/Headers/QSqlDatabase \
 		/Applications/qt/5.13.1/clang_64/lib/QtSql.framework/Headers/qsqldatabase.h \
@@ -897,9 +1012,10 @@ w1.o: ../server/w1.cpp ../server/w1.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtSql.framework/Headers/qsqlquery.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtSql.framework/Headers/QSqlError \
 		/Applications/qt/5.13.1/clang_64/lib/QtSql.framework/Headers/qsqlerror.h \
-		ui_w1.h \
-		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QDebug \
-		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qdebug.h
+		../server/udp_socket.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/QUdpSocket \
+		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/qudpsocket.h \
+		ui_w1.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o w1.o ../server/w1.cpp
 
 moc_my_server_tcp.o: moc_my_server_tcp.cpp 
@@ -907,6 +1023,12 @@ moc_my_server_tcp.o: moc_my_server_tcp.cpp
 
 moc_my_socket_tcp.o: moc_my_socket_tcp.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_my_socket_tcp.o moc_my_socket_tcp.cpp
+
+moc_my_thread.o: moc_my_thread.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_my_thread.o moc_my_thread.cpp
+
+moc_udp_socket.o: moc_udp_socket.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_udp_socket.o moc_udp_socket.cpp
 
 moc_w1.o: moc_w1.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_w1.o moc_w1.cpp

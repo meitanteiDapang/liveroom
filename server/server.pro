@@ -21,7 +21,9 @@ SOURCES += \
     main.cpp \
     my_server_tcp.cpp \
     my_socket_tcp.cpp \
+    my_thread.cpp \
     protocol.cpp \
+    udp_socket.cpp \
     w1.cpp
 
 HEADERS += \
@@ -29,7 +31,9 @@ HEADERS += \
     db_handler.h \
     my_server_tcp.h \
     my_socket_tcp.h \
+    my_thread.h \
     protocol.h \
+    udp_socket.h \
     w1.h
 
 FORMS += \

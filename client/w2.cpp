@@ -72,7 +72,7 @@ void W2::insert_lv(QString ddd)
 //    ui->lv->edit(index);
     *m_stringlist << ddd;
     m_lm->setStringList(*m_stringlist);
-    ui->lv->setModelColumn(1);
+    //ui->lv->setModelColumn(1);
     ui->lv->setModel(m_lm);
     //ui->lv->setModelColumn(1);
 

@@ -297,7 +297,6 @@ void My_socket_tcp::rocket_handler(Protocol &pdu)
     pdu.msg_type = SEND_ROCKET_TYPE+ADD_RETURN;
 }
 
-
 void My_socket_tcp::receive_msg()
 {
     Protocol pdu;
