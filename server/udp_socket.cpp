@@ -21,39 +21,30 @@ Udp_socket& Udp_socket::get_instance()
 
 void Udp_socket::recv_msg()
 {
-    qint64 size = m_socket_udp.bytesAvailable();
-    if(size != sizeof(Udp_pro))
-    {
-        //qDebug() << "非法包";
-        return;
-    }
-    else
-    {
-        //qDebug() << "正常包";
-    }
+    //qint64 size = m_socket_udp.bytesAvailable();
+    //bool is_pic_pic = (size!=sizeof(Udp_pro));
 
+    //qDebug() << "开始读";
     Udp_pro updu;
     QHostAddress client_host;
     quint16 client_port;
-    m_socket_udp.readDatagram((char*)(&updu), size, &client_host, &client_port);
+    m_socket_udp.readDatagram((char*)(&updu), sizeof(Udp_pro), &client_host, &client_port);
 
     int i = 0;
-
     if(updu.is_getout)
     {
         for(i = 0; i <m_vec.size(); i++)
         {
             if(updu.id == m_vec[i]->id)
             {
-                qDebug() <<"delete";
+
                 delete m_vec[i];
                 m_vec.remove(i);
+                //qDebug() <<"delete"  << m_vec.size();
             }
         }
         return;
     }
-
-
     //看下是不是老udp用户
 
     for(i = 0; i < m_vec.size(); i++)
@@ -67,7 +58,7 @@ void Udp_socket::recv_msg()
     //插入
     if(i == m_vec.size())
     {
-        //qDebug() << updu.id << updu.room_id << updu.is_caster << client_port;
+        qDebug() << updu.id << updu.room_id << updu.is_caster << client_port;
         ClientInfo* p_clientinfo = new ClientInfo;
         p_clientinfo->id = updu.id;
         p_clientinfo->room_id = updu.room_id;
@@ -82,13 +73,8 @@ void Udp_socket::recv_msg()
     {
         return;
     }
-
-
     //开始处理,群发给所有B
     //qDebug() << updu.id;
-
-
-
     int vsize = m_vec.size();
     i = 0;
     for(i = 0; i < vsize; i++)
@@ -105,12 +91,12 @@ void Udp_socket::recv_msg()
             continue;
         }
         qDebug()<< m_vec[i]->addr << m_vec[i] -> port;
-        qint64 wtf = Udp_socket::get_instance().get_udp_socket().writeDatagram((char*)(&updu)
-                        , sizeof(Udp_pro), m_vec[i]->addr, m_vec[i]->port);
+        //qint64 wtf =
+        Udp_socket::get_instance().get_udp_socket().writeDatagram((char*)(&updu)
+                                                                  , sizeof(Udp_pro), m_vec[i]->addr, m_vec[i]->port);
         //qDebug() << wtf;
     }
-
-
+    //qDebug() <<"size" << m_vec.size();
 
 
 

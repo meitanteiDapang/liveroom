@@ -13,6 +13,7 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpacerItem>
@@ -28,8 +29,10 @@ public:
     QGridLayout *gridLayout_2;
     QGridLayout *gridLayout;
     QVBoxLayout *layouto;
+    QLabel *pic_label;
     QVBoxLayout *verticalLayout;
     QTextBrowser *msg_tb;
+    QLabel *label;
     QHBoxLayout *horizontalLayout;
     QLineEdit *msg_le;
     QPushButton *send_pb;
@@ -51,6 +54,11 @@ public:
         layouto = new QVBoxLayout();
         layouto->setObjectName(QString::fromUtf8("layouto"));
         layouto->setSizeConstraint(QLayout::SetFixedSize);
+        pic_label = new QLabel(W3);
+        pic_label->setObjectName(QString::fromUtf8("pic_label"));
+
+        layouto->addWidget(pic_label);
+
 
         gridLayout->addLayout(layouto, 0, 0, 1, 1);
 
@@ -65,6 +73,17 @@ public:
         msg_tb->setSizePolicy(sizePolicy);
 
         verticalLayout->addWidget(msg_tb);
+
+        label = new QLabel(W3);
+        label->setObjectName(QString::fromUtf8("label"));
+        QSizePolicy sizePolicy1(QSizePolicy::Preferred, QSizePolicy::Preferred);
+        sizePolicy1.setHorizontalStretch(0);
+        sizePolicy1.setVerticalStretch(0);
+        sizePolicy1.setHeightForWidth(label->sizePolicy().hasHeightForWidth());
+        label->setSizePolicy(sizePolicy1);
+        label->setMinimumSize(QSize(200, 320));
+
+        verticalLayout->addWidget(label);
 
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
@@ -93,11 +112,11 @@ public:
 
         rocket_pb = new QPushButton(W3);
         rocket_pb->setObjectName(QString::fromUtf8("rocket_pb"));
-        QSizePolicy sizePolicy1(QSizePolicy::Minimum, QSizePolicy::Minimum);
-        sizePolicy1.setHorizontalStretch(0);
-        sizePolicy1.setVerticalStretch(30);
-        sizePolicy1.setHeightForWidth(rocket_pb->sizePolicy().hasHeightForWidth());
-        rocket_pb->setSizePolicy(sizePolicy1);
+        QSizePolicy sizePolicy2(QSizePolicy::Minimum, QSizePolicy::Minimum);
+        sizePolicy2.setHorizontalStretch(0);
+        sizePolicy2.setVerticalStretch(30);
+        sizePolicy2.setHeightForWidth(rocket_pb->sizePolicy().hasHeightForWidth());
+        rocket_pb->setSizePolicy(sizePolicy2);
         QFont font;
         font.setPointSize(18);
         rocket_pb->setFont(font);
@@ -113,11 +132,11 @@ public:
 
         quit_pb = new QPushButton(W3);
         quit_pb->setObjectName(QString::fromUtf8("quit_pb"));
-        QSizePolicy sizePolicy2(QSizePolicy::Minimum, QSizePolicy::Minimum);
-        sizePolicy2.setHorizontalStretch(0);
-        sizePolicy2.setVerticalStretch(0);
-        sizePolicy2.setHeightForWidth(quit_pb->sizePolicy().hasHeightForWidth());
-        quit_pb->setSizePolicy(sizePolicy2);
+        QSizePolicy sizePolicy3(QSizePolicy::Minimum, QSizePolicy::Minimum);
+        sizePolicy3.setHorizontalStretch(0);
+        sizePolicy3.setVerticalStretch(0);
+        sizePolicy3.setHeightForWidth(quit_pb->sizePolicy().hasHeightForWidth());
+        quit_pb->setSizePolicy(sizePolicy3);
         quit_pb->setFont(font);
 
         gridLayout->addWidget(quit_pb, 1, 1, 1, 1);
@@ -134,11 +153,13 @@ public:
     void retranslateUi(QWidget *W3)
     {
         W3->setWindowTitle(QCoreApplication::translate("W3", "Form", nullptr));
+        pic_label->setText(QCoreApplication::translate("W3", "\346\227\240\347\233\264\346\222\255", nullptr));
         msg_tb->setHtml(QCoreApplication::translate("W3", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'.AppleSystemUIFont'; font-size:13pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'.AppleSystemUIFont';\"><br /></p></body></html>", nullptr));
+        label->setText(QCoreApplication::translate("W3", "TextLabel", nullptr));
         send_pb->setText(QCoreApplication::translate("W3", "\345\217\221\351\200\201", nullptr));
         rocket_pb->setText(QCoreApplication::translate("W3", "\347\201\253\347\256\255/500", nullptr));
         quit_pb->setText(QCoreApplication::translate("W3", "\351\200\200\345\207\272", nullptr));

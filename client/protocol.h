@@ -2,6 +2,7 @@
 #define PROTOCOL_H
 
 //msg_type shupazu
+#include <QByteArray>
 
 #define ADD_RETURN 50000
 
@@ -25,6 +26,8 @@
 #define SEND_ROCKET_TYPE 305
 #define COMMING_ROCKET_TYPE  306
 
+
+#define PIC_MAX_SIZE 3000
 
 struct Protocol
 {
@@ -53,11 +56,16 @@ struct Protocol
 
 struct Udp_pro
 {
+    char alala[4];
     char username[32];
     int room_id;
     int id;
     bool is_caster;
     bool is_getout;
+    bool is_end;
+    int size;
+    int whole;
+    char data[PIC_MAX_SIZE];
 };
 
 

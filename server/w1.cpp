@@ -13,7 +13,7 @@ W1::W1(QWidget *parent)
 W1::~W1()
 {
     Db_handler::get_instance()->whenclose();
-    //qDebug() << "123";
+    //qDebug() << sizeof(Udp_pro);
     delete ui;
     //qDebug() << "123";
 }

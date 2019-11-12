@@ -10,6 +10,7 @@
 
 #include "w3.h"
 
+extern bool arimashida;
 //int m_id = 0;
 
 W1::W1(QWidget *parent)
@@ -39,43 +40,43 @@ void W1::connect_to_server()
     m_socket_tcp.connectToHost(QHostAddress(IP_ADDRESS), QString(PORT).toUShort());
 }
 
- W1 &W1::get_instance()
+W1 &W1::get_instance()
 {
      static W1 instance;
      return instance;
  }
 
- QTcpSocket &W1::get_socket_tcp()
+QTcpSocket &W1::get_socket_tcp()
  {
      return m_socket_tcp;
  }
 
- void W1::reload_widget()
+void W1::reload_widget()
  {
      ui->password_le->clear();
  }
 
- int W1::get_id()
+int W1::get_id()
  {
      return m_id;
  }
 
- void W1::set_id(int id)
+void W1::set_id(int id)
  {
     m_id = id;
  }
 
- char* W1::get_username()
+char* W1::get_username()
  {
     return m_username;
  }
 
- void W1::set_username(char* username)
+void W1::set_username(char* username)
  {
      strcpy(m_username, username);
  }
 
- void W1::tell_udp_i_am_in()
+void W1::tell_udp_i_am_in()
  {
      Udp_pro updu;
      memset(&updu, 0, sizeof(Udp_pro));
@@ -144,8 +145,10 @@ void W1::receive_msg()
                 W3::get_instance().get_viewfinder()->show();
 
 
+
                 //直播推流相关
-                W3::get_instance().get_thread().start();
+                arimashida = true;
+                W3::get_instance().get_thread()->start();
             }
             else
             {

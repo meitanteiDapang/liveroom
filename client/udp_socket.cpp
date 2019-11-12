@@ -22,7 +22,8 @@ Udp_socket& Udp_socket::get_instance()
 
 void Udp_socket::recv_msg()
 {
-    //qDebug() << "123123123123";
+    //主播不会收udp包
+    qDebug() << "123123123123";
     //只有观众会收到这个包哦
     qint64 size = m_socket_udp.bytesAvailable();
     if(size != sizeof(Udp_pro))
@@ -42,11 +43,11 @@ void Udp_socket::recv_msg()
     QHostAddress client_host;
     quint16 client_port;
     m_socket_udp.readDatagram((char*)(&updu), size, &client_host, &client_port);
-
+    qDebug() << updu.size ;
     //qDebug() << "wawawa"<<updu.id;
     //将数据用起来，显示起来
-    W3::get_instance().show_live_data(updu);
-
+    QByteArray b("123",3);
+    W3::get_instance().show_live_data(b);
 }
 
 

@@ -19,8 +19,9 @@ SOURCES += \
     common.cpp \
     main.cpp \
     my_thread.cpp \
-    my_thread_audience.cpp \
-    my_thread_audience_read.cpp \
+    #my_thread_audience.cpp \
+    #my_thread_audience_read.cpp \
+    #myeventloop.cpp \
     protocol.cpp \
     udp_socket.cpp \
     udp_socket_audience.cpp \
@@ -31,8 +32,9 @@ SOURCES += \
 HEADERS += \
     common.h \
     my_thread.h \
-    my_thread_audience.h \
-    my_thread_audience_read.h \
+    #my_thread_audience.h \
+    #my_thread_audience_read.h \
+    #myeventloop.h \
     protocol.h \
     udp_socket.h \
     udp_socket_audience.h \

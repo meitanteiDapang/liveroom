@@ -14,8 +14,9 @@
 #include <QImage>
 #include "udp_socket.h"
 #include <my_thread.h>
-#include <my_thread_audience.h>
-#include <my_thread_audience_read.h>
+//#include <my_thread_audience.h>
+//#include <my_thread_audience_read.h>
+#include <QPixmap>
 
 namespace Ui {
 class W3;
@@ -25,9 +26,14 @@ class W3 : public QWidget
 {
     Q_OBJECT
 
+signals:
+    void please_stop_capture();
+    void go_on_process_picpic();
 public slots:
-
+    void when_captured(int id, QImage image);
 public:
+    Udp_pro m_pdup;
+
     explicit W3(QWidget *parent = nullptr);
     ~W3();
     static W3 &get_instance();
@@ -48,16 +54,22 @@ public:
     void add_room_name_test(QString room_name);
 
     void send_udp_to_server(Udp_pro* updu);
-    My_thread& get_thread();
-    My_thread_audience& get_thread_audience();
-    My_thread_audience_read& get_thread_audience_read();
-    void show_live_data(Udp_pro& updu);
+    My_thread* get_thread();
+    //My_thread_audience& get_thread_audience();
+    //My_thread_audience_read& get_thread_audience_read();
+    void show_live_data(QByteArray b);
+    void get_now_pic();
+    void modify_updu_to_have_picdata(Udp_pro& updu);
+
 private slots:
     void on_quit_pb_clicked();
 
     void on_send_pb_clicked();
 
     void on_rocket_pb_clicked();
+
+
+
 
 private:
     Ui::W3 *ui;
@@ -67,9 +79,10 @@ private:
     bool m_is_caster;
     int m_room_id;//房间主播id
     QString m_room_name;
-    My_thread m_thread;
-    My_thread_audience m_thread_audience;
-    My_thread_audience_read m_thread_audience_read;
+    My_thread* m_thread;
+    //My_thread_audience m_thread_audience;
+    //My_thread_audience_read m_thread_audience_read;
+    QPixmap* m_pic_pic;
 
 };
 

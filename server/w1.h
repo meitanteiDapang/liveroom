@@ -30,6 +30,7 @@ public:
     static W1 &get_instance();
     My_server_tcp &get_server_tcp();
 
+
     void update_msg(QString msg);
     void update_db_status(QString msg);
 
