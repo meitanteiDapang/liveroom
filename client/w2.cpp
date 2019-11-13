@@ -38,7 +38,7 @@ void W2::closeEvent(QCloseEvent *event)
     QCloseEvent* slience = event;
     event = slience;
     W1::get_instance().logout_fun();
-    qDebug() << "here";
+    //qDebug() << "here";
 }
 
 void W2::set_username_label(char *username)

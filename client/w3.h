@@ -36,6 +36,9 @@ public slots:
     void when_captured(int id, QImage image);
 public:
     Udp_pro m_pdup;
+    QPixmap* m_pic_pic;
+    QByteArray* m_bytearray;
+    QBuffer* m_buffer;
 
     explicit W3(QWidget *parent = nullptr);
     ~W3();
@@ -86,9 +89,7 @@ private:
     My_thread* m_thread;
     //My_thread_audience m_thread_audience;
     //My_thread_audience_read m_thread_audience_read;
-    QPixmap* m_pic_pic;
-    QByteArray* m_bytearray;
-    QBuffer* m_buffer;
+
 };
 
 #endif // W3_H

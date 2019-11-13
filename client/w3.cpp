@@ -19,8 +19,8 @@ void W3::when_captured(int id, QImage image)
     //static int i = 0;
     //uchar *image_uchar = image.bits();
     //qDebug() << image.size();
-    *m_pic_pic = QPixmap::fromImage(image);
-
+    *m_pic_pic = QPixmap::fromImage(image).scaledToWidth(320,Qt::FastTransformation).scaledToWidth(320, Qt::SmoothTransformation);
+    //qDebug() << m_pic_pic->size();
     //emit go_on_process_picpic();
 
 }
@@ -54,6 +54,7 @@ W3::W3(QWidget *parent) :
                             this, SLOT(when_captured(int, QImage)));
 
     connect(this, SIGNAL(please_stop_capture()), m_imageCapture, SLOT(cancelCapture()));
+    connect(ui->msg_le, SIGNAL(returnPressed()), this, SLOT(on_send_pb_clicked()));
 
     ui->layouto->setGeometry(QRect(50,50,300,300));
 
@@ -215,10 +216,13 @@ My_thread* W3::get_thread()
 void W3::show_live_data(QByteArray b)
 {
     //这边要改成把图片放上去，
-    add_chat_text(QString("%1").arg("nmsl"));
-    m_pic_pic->loadFromData(b);
-    ui->pic_label->setPixmap(*m_pic_pic);
-
+    //add_chat_text(QString("%1").arg("nmsl"));
+    if(m_pic_pic->loadFromData(b, "png"))
+    {
+        ui->pic_label->clear();
+        ui->pic_label->setPixmap(*m_pic_pic);
+        //ui->pic_label->setScaledContents(true);
+    }
 }
 
 void W3::get_now_pic()
@@ -312,9 +316,63 @@ void W3::better_go_out()
     emit please_stop_capture();
 }
 
-//将pic分割并打包发送至udp port+1服务器
+//将pic分割并打包发送至udp port+1
 void W3::pic_pic_handler_and_send()
 {
+    //处理图片并发送
+#if 0
+    while (true)
+    {
+        //已经获得图片啦
+        m_buffer->open(QIODevice::ReadWrite);
+        m_pic_pic->save(m_buffer, "png");
+
+        qint64 ret = 0;
+        qint64 iSended = 0;
+        qint64 iLefted = m_bytearray->size();
+        static const char *p = nullptr;
+        p = m_bytearray->constData();
+        qDebug() << "\n\n total size = " << iLefted;
+        while(iLefted)
+        {
+            if (iLefted > PIC_MAX_SIZE)
+            {
+                ret = Udp_socket::get_instance().get_udp_socket().
+                        writeDatagram(p+iSended, PIC_MAX_SIZE
+                            , QHostAddress(IP_ADDRESS), QString(UDPPORT).toUShort() +1 );
+            }
+            else
+            {
+                ret = Udp_socket::get_instance().get_udp_socket().
+                        writeDatagram(p+iSended, iLefted
+                            ,QHostAddress(IP_ADDRESS), QString(UDPPORT).toUShort() +1 );
+            }
+            if (0 == ret)
+            {
+                break;
+            }
+            else if (-1 == ret)
+            {
+                ret = 0;
+            }
+            else
+            {
+                iLefted -= ret;
+                iSended += ret;
+            }
+            usleep(TIMER_TIME);
+        }
+        m_pByteArray->clear();
+
+        qDebug() << "此次截屏总共发送的数据大小 = " << iSended;
+
+        m_pUdpSocket->writeDatagram("end", 3, QHostAddress(m_strIp), m_usPort);
+    }
+#endif
+
+
+#if 0
+    //测试发送wtf
     *m_bytearray = QByteArray("wtf", 4);
     static const char *p = nullptr;
     p = m_bytearray->constData();
@@ -322,6 +380,7 @@ void W3::pic_pic_handler_and_send()
                                         writeDatagram(p, 4,
                                         QHostAddress(IP_ADDRESS),
                                         QString(UDPPORT).toUShort()+1);
+#endif
 }
 
 void W3::on_quit_pb_clicked()

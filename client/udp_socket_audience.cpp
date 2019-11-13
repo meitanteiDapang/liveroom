@@ -29,7 +29,48 @@ void Udp_socket_audience::recv_msg()
 {
 
 //接受服务器的图片流
+    //好好看一下
 #if 1
+    QByteArray buf;
+    qint64 ret = 0;
+    //qDebug() << "############################";
+    while (m_socket_udp.hasPendingDatagrams())
+    {
+        buf.resize(int(m_socket_udp.pendingDatagramSize()));
+        ret = m_socket_udp.readDatagram(buf.data(), buf.size());
+        //qDebug() << "rsize=" << ret;
+
+        if ("end" == buf.toStdString())
+        {
+            //qDebug() << "data=" << buf;
+            //qDebug() << "map size: " << m_storeRecvMsg.size();
+            //            QBuffer buffer(&m_storeRecvMsg);
+            //            buffer.open(QIODevice::ReadOnly);
+            //            QImageReader read(&buffer, "png");
+            //            QImage image = read.read();
+            //            m_pMapLab->clear();
+            //            m_pMapLab->setPixmap(QPixmap::fromImage(image));
+            //            m_pMapLab->setScaledContents(true);
+
+
+
+            W3::get_instance().show_live_data(m_storeRecvMsg);
+
+            m_storeRecvMsg.clear();
+        }
+        else
+        {
+
+            m_storeRecvMsg.append(buf.data(), int(ret));
+
+        }
+        buf.clear();
+    }
+
+#endif
+
+
+#if 0
     QByteArray buf;
     qint64 ret = 0;
     qDebug() << "############################";

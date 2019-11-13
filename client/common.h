@@ -7,6 +7,7 @@
 #define UDPPORT "8889"
 //#define DB_PATH "/Users/nmsl"
 #define INTERVAL 3000
+#define TIMER_TIME 100
 
 #define RECEIVE true
 #define SEND false

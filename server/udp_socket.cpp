@@ -24,8 +24,9 @@ void Udp_socket::test_show_vec()
     for(i = 0; i < m_vec.size(); i++)
     {
         ClientInfo* p = m_vec[i];
-        qDebug() << p->id << p->room_id << p->addr << p->port;
+        qDebug() << "test_show_vect"<<p->id << p->room_id << p->addr << p->port;
     }
+    qDebug() << "done!";
 }
 
 Udp_socket& Udp_socket::get_instance()
@@ -134,7 +135,7 @@ void Udp_socket::recv_msg()
     //插入
     if(i == m_vec.size())
     {
-        qDebug() << updu.id << updu.room_id << updu.is_caster << client_port;
+        //qDebug() << updu.id << updu.room_id << updu.is_caster << client_port;
         ClientInfo* p_clientinfo = new ClientInfo;
         p_clientinfo->id = updu.id;
         p_clientinfo->room_id = updu.room_id;

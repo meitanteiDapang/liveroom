@@ -32,7 +32,6 @@ public:
     QLabel *pic_label;
     QVBoxLayout *verticalLayout;
     QTextBrowser *msg_tb;
-    QLabel *label;
     QHBoxLayout *horizontalLayout;
     QLineEdit *msg_le;
     QPushButton *send_pb;
@@ -74,17 +73,6 @@ public:
 
         verticalLayout->addWidget(msg_tb);
 
-        label = new QLabel(W3);
-        label->setObjectName(QString::fromUtf8("label"));
-        QSizePolicy sizePolicy1(QSizePolicy::Preferred, QSizePolicy::Preferred);
-        sizePolicy1.setHorizontalStretch(0);
-        sizePolicy1.setVerticalStretch(0);
-        sizePolicy1.setHeightForWidth(label->sizePolicy().hasHeightForWidth());
-        label->setSizePolicy(sizePolicy1);
-        label->setMinimumSize(QSize(200, 320));
-
-        verticalLayout->addWidget(label);
-
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
         msg_le = new QLineEdit(W3);
@@ -112,11 +100,11 @@ public:
 
         rocket_pb = new QPushButton(W3);
         rocket_pb->setObjectName(QString::fromUtf8("rocket_pb"));
-        QSizePolicy sizePolicy2(QSizePolicy::Minimum, QSizePolicy::Minimum);
-        sizePolicy2.setHorizontalStretch(0);
-        sizePolicy2.setVerticalStretch(30);
-        sizePolicy2.setHeightForWidth(rocket_pb->sizePolicy().hasHeightForWidth());
-        rocket_pb->setSizePolicy(sizePolicy2);
+        QSizePolicy sizePolicy1(QSizePolicy::Minimum, QSizePolicy::Minimum);
+        sizePolicy1.setHorizontalStretch(0);
+        sizePolicy1.setVerticalStretch(30);
+        sizePolicy1.setHeightForWidth(rocket_pb->sizePolicy().hasHeightForWidth());
+        rocket_pb->setSizePolicy(sizePolicy1);
         QFont font;
         font.setPointSize(18);
         rocket_pb->setFont(font);
@@ -132,11 +120,11 @@ public:
 
         quit_pb = new QPushButton(W3);
         quit_pb->setObjectName(QString::fromUtf8("quit_pb"));
-        QSizePolicy sizePolicy3(QSizePolicy::Minimum, QSizePolicy::Minimum);
-        sizePolicy3.setHorizontalStretch(0);
-        sizePolicy3.setVerticalStretch(0);
-        sizePolicy3.setHeightForWidth(quit_pb->sizePolicy().hasHeightForWidth());
-        quit_pb->setSizePolicy(sizePolicy3);
+        QSizePolicy sizePolicy2(QSizePolicy::Minimum, QSizePolicy::Minimum);
+        sizePolicy2.setHorizontalStretch(0);
+        sizePolicy2.setVerticalStretch(0);
+        sizePolicy2.setHeightForWidth(quit_pb->sizePolicy().hasHeightForWidth());
+        quit_pb->setSizePolicy(sizePolicy2);
         quit_pb->setFont(font);
 
         gridLayout->addWidget(quit_pb, 1, 1, 1, 1);
@@ -159,7 +147,6 @@ public:
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'.AppleSystemUIFont'; font-size:13pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'.AppleSystemUIFont';\"><br /></p></body></html>", nullptr));
-        label->setText(QCoreApplication::translate("W3", "TextLabel", nullptr));
         send_pb->setText(QCoreApplication::translate("W3", "\345\217\221\351\200\201", nullptr));
         rocket_pb->setText(QCoreApplication::translate("W3", "\347\201\253\347\256\255/500", nullptr));
         quit_pb->setText(QCoreApplication::translate("W3", "\351\200\200\345\207\272", nullptr));

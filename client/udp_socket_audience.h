@@ -26,6 +26,7 @@ private slots:
 
 
 private:
+    QByteArray m_storeRecvMsg;
     QUdpSocket m_socket_udp;
     //QVector<ClientInfo*> m_vec;
 };

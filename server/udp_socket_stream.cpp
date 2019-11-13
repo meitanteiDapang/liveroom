@@ -20,7 +20,7 @@ Udp_socket_stream& Udp_socket_stream::get_instance()
     return instance;
 }
 
-//此udp只用来接受主播包
+//此udp只用来接受主播包与转发包
 void Udp_socket_stream::recv_msg()
 {
 #if 1
@@ -28,17 +28,19 @@ void Udp_socket_stream::recv_msg()
     qint64 ret = 0;
     QHostAddress caster_address;
     unsigned short caster_port;
-    qDebug() << "############################";
+    //qDebug() << "############################";
     int i = 0;
     int caster_id = 0;
     int caster_room_id = 0;
     while (m_socket_udp.hasPendingDatagrams())
     {
+
+        //这里转发应该是啥都不用干
         buf.resize(int(m_socket_udp.pendingDatagramSize()));
         ret = m_socket_udp.readDatagram(buf.data(), buf.size(), &caster_address, &caster_port);
-        qDebug() << "rsize=" << ret;
-        qDebug() <<"before" << caster_id << caster_room_id << "此时主播" << caster_address << caster_port;
-        Udp_socket::get_instance().test_show_vec();
+        //qDebug() << "rsize=" << ret;
+        //qDebug() <<"before" << caster_id << caster_room_id << "此时主播" << caster_address << caster_port;
+        //Udp_socket::get_instance().test_show_vec();
         //转发开始,先获取主播id
         for(i = 0; i < Udp_socket::get_instance().get_vec().size(); i++)
         {
@@ -51,7 +53,7 @@ void Udp_socket_stream::recv_msg()
                 break;
             }
         }
-        qDebug() << "after" << caster_id << caster_room_id;
+        //qDebug() << "after" << caster_id << caster_room_id;
         //然后向房间里的人散播火种
         for(i = 0; i < Udp_socket::get_instance().get_vec().size(); i++)
         {
