@@ -9,6 +9,8 @@
 
 //extern int id_global;
 extern bool arimashida;
+extern QHostAddress my_ip;
+extern unsigned short my_port;
 
 void W3::when_captured(int id, QImage image)
 {
@@ -30,8 +32,11 @@ W3::W3(QWidget *parent) :
     ui->setupUi(this);
     m_room_id = 0;
     m_pic_pic = new QPixmap;
-
     m_thread = new My_thread;
+    //存放要发送的屏幕数据
+    m_bytearray = new QByteArray;
+    m_buffer = new QBuffer(m_bytearray);
+
 
     //截图相关
     m_camera=new QCamera;//摄像头
@@ -225,6 +230,7 @@ void W3::get_now_pic()
 
 void W3::modify_updu_to_have_picdata(Udp_pro &updu)
 {
+#if 0
     //将picpic保存到传进来的updu
     //static int i = 0;
     if(1)
@@ -293,21 +299,46 @@ void W3::modify_updu_to_have_picdata(Udp_pro &updu)
 
         }
     }
+#endif
+}
+
+void W3::better_go_out()
+{
+    //qDebug() <<"wtf2";
+    m_viewfinder->setParent(nullptr);
+    //qDebug() <<"wtf3";
+    m_camera->stop();
+    //qDebug() <<"wtf4";
+    emit please_stop_capture();
+}
+
+//将pic分割并打包发送至udp port+1服务器
+void W3::pic_pic_handler_and_send()
+{
+    *m_bytearray = QByteArray("wtf", 4);
+    static const char *p = nullptr;
+    p = m_bytearray->constData();
+    Udp_socket::get_instance().get_udp_socket().
+                                        writeDatagram(p, 4,
+                                        QHostAddress(IP_ADDRESS),
+                                        QString(UDPPORT).toUShort()+1);
 }
 
 void W3::on_quit_pb_clicked()
 {
-    if(m_is_caster)
+    //if(m_is_caster)
     {
         ui->pic_label->show();
         m_viewfinder->setParent(nullptr);
         m_camera->stop();
         emit please_stop_capture();
     }
-    else //观众，做的,说个JB
+    //else //观众，做的,说个JB
     {
-
+        //Udp_socket_audience::get_instance().get_udp_socket().close();
     }
+
+    m_buffer->close();
 
 
     //delete m_viewfinder;
@@ -328,14 +359,19 @@ void W3::on_quit_pb_clicked()
         }
     }
     */
+
     //告诉UDP 爷走了， 把爷删了
     Udp_pro updu;
     memset(&updu, 0, sizeof(Udp_pro));
     updu.id = W1::get_instance().get_id();
+    updu.room_id = m_room_id;
     updu.is_getout = true;
     W3::get_instance().send_udp_to_server(&updu);
 
     W3::get_instance().clear_chat_text();
+
+    //取消绑定
+    //if(Udp_socket::get_instance().get_udp_socket().
 
     //向服务器发送离开room
     Protocol pdu;
@@ -381,3 +417,11 @@ void W3::on_rocket_pb_clicked()
 
     W1::get_instance().get_socket_tcp().write((char*)&pdu, sizeof(pdu));
 }
+
+
+
+
+
+
+
+

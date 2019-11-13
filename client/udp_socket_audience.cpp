@@ -3,6 +3,9 @@
 #include <QDebug>
 #include "udp_socket_audience.h"
 
+extern QHostAddress my_ip;
+extern unsigned short my_port;
+
 Udp_socket_audience::Udp_socket_audience(QWidget *parent) : QWidget(parent)
 {
     connect(&m_socket_udp, SIGNAL(readyRead()), this, SLOT(recv_msg()));
@@ -24,6 +27,68 @@ Udp_socket_audience& Udp_socket_audience::get_instance()
 
 void Udp_socket_audience::recv_msg()
 {
+
+//接受服务器的图片流
+#if 1
+    QByteArray buf;
+    qint64 ret = 0;
+    qDebug() << "############################";
+    while (m_socket_udp.hasPendingDatagrams())
+    {
+        buf.resize(int(m_socket_udp.pendingDatagramSize()));
+        ret = m_socket_udp.readDatagram(buf.data(), buf.size());
+        qDebug() << "rsize=" << ret;
+        W3::get_instance().add_chat_text(QString(buf.toStdString().c_str()));
+
+        buf.clear();
+    }
+#endif
+
+#if 0
+    QByteArray buf;
+    qint64 ret = 0;
+    qDebug() << "############################";
+    while (m_pUdpSocket->hasPendingDatagrams())
+    {
+        buf.resize(m_pUdpSocket->pendingDatagramSize());
+        ret = m_pUdpSocket->readDatagram(buf.data(), buf.size());
+        qDebug() << "rsize=" << ret;
+
+        if ("end" == buf.toStdString())
+        {
+            qDebug() << "data=" << buf;
+            qDebug() << "map size: " << m_storeRecvMsg.size();
+            //            QBuffer buffer(&m_storeRecvMsg);
+            //            buffer.open(QIODevice::ReadOnly);
+            //            QImageReader read(&buffer, "png");
+            //            QImage image = read.read();
+            //            m_pMapLab->clear();
+            //            m_pMapLab->setPixmap(QPixmap::fromImage(image));
+            //            m_pMapLab->setScaledContents(true);
+
+
+
+            QPixmap pixmap;
+            if (pixmap.loadFromData(m_storeRecvMsg, "png"))
+            {
+                m_pMapLab->clear();
+                m_pMapLab->setPixmap(pixmap);
+                m_pMapLab->setScaledContents(true);
+            }
+
+            m_storeRecvMsg.clear();
+        }
+        else
+        {
+
+            m_storeRecvMsg.append(buf.data(), ret);
+
+        }
+        buf.clear();
+    }
+#endif
+
+
 #if 0
     QByteArray buf;
     qint64 ret = 0;

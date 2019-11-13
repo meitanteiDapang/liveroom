@@ -30,7 +30,9 @@
 #define COMMING_ROCKET_TYPE  306
 
 
-#define PIC_MAX_SIZE 3000
+#define UDP_TYPE
+
+#define PIC_MAX_SIZE 4096
 
 struct Protocol
 {
@@ -63,7 +65,7 @@ struct Udp_pro
     bool is_end;
     int size;
     int whole;
-    char data[PIC_MAX_SIZE];
+    //char data[PIC_MAX_SIZE];
 };
 
 

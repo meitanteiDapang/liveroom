@@ -24,6 +24,7 @@ SOURCES += \
     my_thread.cpp \
     protocol.cpp \
     udp_socket.cpp \
+    udp_socket_stream.cpp \
     w1.cpp
 
 HEADERS += \
@@ -34,6 +35,7 @@ HEADERS += \
     my_thread.h \
     protocol.h \
     udp_socket.h \
+    udp_socket_stream.h \
     w1.h
 
 FORMS += \

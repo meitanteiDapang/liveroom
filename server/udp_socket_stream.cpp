@@ -1,45 +1,29 @@
-#include "udp_socket.h"
+#include "udp_socket_stream.h"
 #include "protocol.h"
 #include <string.h>
 
 
-Udp_socket::Udp_socket(QWidget *parent) : QWidget(parent)
+Udp_socket_stream::Udp_socket_stream(QWidget *parent) : QWidget(parent)
 {
     connect(&m_socket_udp, SIGNAL(readyRead()), this, SLOT(recv_msg()));
 }
 
-QUdpSocket &Udp_socket::get_udp_socket()
+QUdpSocket &Udp_socket_stream::get_udp_socket()
 {
     return m_socket_udp;
 }
 
-QVector<ClientInfo *> &Udp_socket::get_vec()
-{
-    return m_vec;
-}
 
-void Udp_socket::test_show_vec()
+Udp_socket_stream& Udp_socket_stream::get_instance()
 {
-    int i = 0;
-    for(i = 0; i < m_vec.size(); i++)
-    {
-        ClientInfo* p = m_vec[i];
-        qDebug() << p->id << p->room_id << p->addr << p->port;
-    }
-}
-
-Udp_socket& Udp_socket::get_instance()
-{
-    static Udp_socket instance;
+    static Udp_socket_stream instance;
     return instance;
 }
 
-
-//此udp仅接受udp注册信息与退出信息
-void Udp_socket::recv_msg()
+//此udp只用来接受主播包
+void Udp_socket_stream::recv_msg()
 {
-
-#if 0
+#if 1
     QByteArray buf;
     qint64 ret = 0;
     QHostAddress caster_address;
@@ -71,9 +55,9 @@ void Udp_socket::recv_msg()
         //然后向房间里的人散播火种
         for(i = 0; i < Udp_socket::get_instance().get_vec().size(); i++)
         {
-//            if(caster_id == Udp_socket::get_instance().get_vec()[i]->room_id &&
-//                    Udp_socket::get_instance().get_vec()[i]->id !=
-//                    caster_port == Udp_socket::get_instance().get_vec()[i]->room_id)
+            if(caster_room_id == Udp_socket::get_instance().get_vec()[i]->room_id &&
+                    Udp_socket::get_instance().get_vec()[i]->id !=
+                    Udp_socket::get_instance().get_vec()[i]->room_id)
             {
                 //qDebug() << "send" << Udp_socket::get_instance().get_vec()[i]->addr
                  //        << Udp_socket::get_instance().get_vec()[i]->port;
@@ -86,62 +70,49 @@ void Udp_socket::recv_msg()
     }
 #endif
 
-#if 1
-    Udp_pro updu;
-    QHostAddress client_host;
-    quint16 client_port;
-    m_socket_udp.readDatagram((char*)(&updu), sizeof(Udp_pro), &client_host, &client_port);
-    int i = 0;
-    if(updu.is_getout)
-    {
-        if(updu.id == updu.room_id)//主播退出
-        {
-            for(i = 0; i <m_vec.size(); i++)
-            {
-                if(updu.room_id == m_vec[i]->room_id)//在这个直播间内的都给老子滚
-                {
+    //穿不过去，段错误
 
-                    delete m_vec[i];
-                    m_vec.remove(i);
-                    //qDebug() <<"delete"  << m_vec.size();
-                }
-            }
-        }
-        else//普通观众退出
-        {
-            for(i = 0; i <m_vec.size(); i++)
-            {
-                if(updu.id == m_vec[i]->id)//只有这个id的人给老子滚
-                {
+#if 0
+    QByteArray buf;
+    qint64 ret = 0;
+    qDebug() << "############################";
+    while (m_pUdpSocket->hasPendingDatagrams())
+    {
+        buf.resize(m_pUdpSocket->pendingDatagramSize());
+        ret = m_pUdpSocket->readDatagram(buf.data(), buf.size());
+        qDebug() << "rsize=" << ret;
 
-                    delete m_vec[i];
-                    m_vec.remove(i);
-                    //qDebug() <<"delete"  << m_vec.size();
-                }
-            }
-        }
-        return;
-    }
-    //看下是不是老udp用户
-    for(i = 0; i < m_vec.size(); i++)
-    {
-        if(client_host.toString() == m_vec[i]->addr.toString() && client_port == m_vec[i]->port
-                )
+        if ("end" == buf.toStdString())
         {
-            break;
+            qDebug() << "data=" << buf;
+            qDebug() << "map size: " << m_storeRecvMsg.size();
+            //            QBuffer buffer(&m_storeRecvMsg);
+            //            buffer.open(QIODevice::ReadOnly);
+            //            QImageReader read(&buffer, "png");
+            //            QImage image = read.read();
+            //            m_pMapLab->clear();
+            //            m_pMapLab->setPixmap(QPixmap::fromImage(image));
+            //            m_pMapLab->setScaledContents(true);
+
+
+
+            QPixmap pixmap;
+            if (pixmap.loadFromData(m_storeRecvMsg, "png"))
+            {
+                m_pMapLab->clear();
+                m_pMapLab->setPixmap(pixmap);
+                m_pMapLab->setScaledContents(true);
+            }
+
+            m_storeRecvMsg.clear();
         }
-    }
-    //插入
-    if(i == m_vec.size())
-    {
-        qDebug() << updu.id << updu.room_id << updu.is_caster << client_port;
-        ClientInfo* p_clientinfo = new ClientInfo;
-        p_clientinfo->id = updu.id;
-        p_clientinfo->room_id = updu.room_id;
-        p_clientinfo->addr = client_host;
-        p_clientinfo->port = client_port;
-        m_vec.push_back(p_clientinfo);
-        //qDebug() << "hei";
+        else
+        {
+
+            m_storeRecvMsg.append(buf.data(), ret);
+
+        }
+        buf.clear();
     }
 #endif
 

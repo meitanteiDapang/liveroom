@@ -25,6 +25,8 @@ public:
     Udp_socket(QWidget *parent = nullptr);
     static Udp_socket& get_instance();
     QUdpSocket& get_udp_socket();
+    QVector<ClientInfo*>& get_vec();
+    void test_show_vec();
 
 public slots:
     void recv_msg();

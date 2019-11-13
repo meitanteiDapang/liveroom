@@ -97,11 +97,13 @@ void W1::on_pushButton_clicked()
     QString ip = ui->ip_le->text();
     QString port = ui->port_le_2->text();
     bool ret = false;
+    bool ret2 = false;
     if(!ip.isEmpty() && !port.isEmpty())
     {
         ret = Udp_socket::get_instance().get_udp_socket().bind(QHostAddress(ip), port.toUShort());
+        ret2 = Udp_socket_stream::get_instance().get_udp_socket().bind(QHostAddress(ip), port.toUShort()+1);
     }
-    if(ret)
+    if(ret&&ret2)
     {
         ui->udp_label->setText("已经绑定");
     }

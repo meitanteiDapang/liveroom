@@ -13,10 +13,13 @@
 #include <QDebug>
 #include <QImage>
 #include "udp_socket.h"
+#include "udp_socket_audience.h"
 #include <my_thread.h>
 //#include <my_thread_audience.h>
 //#include <my_thread_audience_read.h>
 #include <QPixmap>
+#include <QByteArray>
+#include <QBuffer>
 
 namespace Ui {
 class W3;
@@ -60,7 +63,8 @@ public:
     void show_live_data(QByteArray b);
     void get_now_pic();
     void modify_updu_to_have_picdata(Udp_pro& updu);
-
+    void better_go_out();
+    void pic_pic_handler_and_send();
 private slots:
     void on_quit_pb_clicked();
 
@@ -83,7 +87,8 @@ private:
     //My_thread_audience m_thread_audience;
     //My_thread_audience_read m_thread_audience_read;
     QPixmap* m_pic_pic;
-
+    QByteArray* m_bytearray;
+    QBuffer* m_buffer;
 };
 
 #endif // W3_H

@@ -3,6 +3,8 @@
 #include "w3.h"
 #include <QDebug>
 
+QHostAddress my_ip = QHostAddress("127.0.0.1");
+unsigned short my_port = 0;
 Udp_socket::Udp_socket(QWidget *parent) : QWidget(parent)
 {
     connect(&m_socket_udp, SIGNAL(readyRead()), this, SLOT(recv_msg()));
@@ -22,6 +24,8 @@ Udp_socket& Udp_socket::get_instance()
 
 void Udp_socket::recv_msg()
 {
+    qDebug() <<"hahaha";
+#if 0
     //主播不会收udp包
     qDebug() << "123123123123";
     //只有观众会收到这个包哦
@@ -48,6 +52,7 @@ void Udp_socket::recv_msg()
     //将数据用起来，显示起来
     QByteArray b("123",3);
     W3::get_instance().show_live_data(b);
+#endif
 }
 
 

@@ -7,10 +7,13 @@
 #include <string.h>
 #include <QDebug>
 #include <udp_socket_audience.h>
+#include <QTime>
 
 #include "w3.h"
 
 extern bool arimashida;
+extern QHostAddress my_ip;
+extern unsigned short my_port;
 //int m_id = 0;
 
 W1::W1(QWidget *parent)
@@ -78,18 +81,58 @@ void W1::set_username(char* username)
 
 void W1::tell_udp_i_am_in()
  {
-     Udp_pro updu;
-     memset(&updu, 0, sizeof(Udp_pro));
-     updu.id = W1::get_instance().get_id();
-     updu.room_id = W3::get_instance().get_room_id();
-     strcpy(updu.username, W1::get_instance().get_username());
-     updu.is_caster = false;
-     updu.is_getout = false;
-     Udp_socket_audience::get_instance().get_udp_socket().writeDatagram((char*)(&updu), sizeof(Udp_pro),
+    //观众注册
+    //绑定一哈
+ #if 0
+    QTime time;
+    time= QTime::currentTime();
+    qsrand(unsigned(time.msec()+time.second()*1000));
+    int n = qrand() % 10000;
+    my_port = (unsigned short)(50000+n);
+    Udp_socket_audience::get_instance().get_udp_socket().bind(my_ip, my_port);
+#endif
+    Udp_pro updu;
+    memset(&updu, 0, sizeof(Udp_pro));
+    updu.id = W1::get_instance().get_id();
+    updu.room_id = W3::get_instance().get_room_id();
+    strcpy(updu.username, W1::get_instance().get_username());
+    updu.is_caster = false;
+    updu.is_getout = false;
+
+
+
+    Udp_socket_audience::get_instance().get_udp_socket().writeDatagram((char*)(&updu), sizeof(Udp_pro),
                                                                QHostAddress(IP_ADDRESS), QString(UDPPORT).toUShort());
-     //W3::get_instance().send_udp_to_server(&updu);
+
+
+    //W3::get_instance().send_udp_to_server(&updu);
      //qDebug() << "audience ready" << updu.id << updu.room_id << updu.is_caster;
- }
+}
+
+void W1::tell_udp_caster_in()
+{
+    //主播注册udp
+    //先绑定
+    /*
+    QTime time;
+    time= QTime::currentTime();
+    qsrand(unsigned(time.msec()+time.second()*1000));
+    int n = qrand() % 10000;
+    my_port = (unsigned short)(50000+n);
+    Udp_socket::get_instance().get_udp_socket().bind(my_ip, my_port);
+    */
+    //主播注册
+    Udp_pro updu;
+    memset(&updu, 0, sizeof(Udp_pro));
+    updu.id = W1::get_instance().get_id();
+    updu.room_id = W3::get_instance().get_room_id();
+    //qDebug() << updu.id << updu.room_id;
+    strcpy(updu.username, W1::get_instance().get_username());
+    updu.is_caster = true;
+    updu.is_getout = false;
+    Udp_socket::get_instance().get_udp_socket().writeDatagram((char*)(&updu), sizeof(Udp_pro),
+                                                              QHostAddress(IP_ADDRESS), QString(UDPPORT).toUShort());
+}
 
 
 
@@ -147,6 +190,11 @@ void W1::receive_msg()
 
 
                 //直播推流相关
+
+                //先注册udp_udpsocket
+                tell_udp_caster_in();
+
+                //进行推流
                 arimashida = true;
                 W3::get_instance().get_thread()->start();
             }
@@ -159,7 +207,16 @@ void W1::receive_msg()
             if(pdu.room_id == W3::get_instance().get_room_id() && !(W3::get_instance().get_is_caster()))
             {
                 QMessageBox::information(this, "主播退出", pdu.data);
+
+                Udp_pro updu;
+                memset(&updu, 0, sizeof(Udp_pro));
+                updu.id = W1::get_instance().get_id();
+                updu.is_getout = true;
+                W3::get_instance().send_udp_to_server(&updu);
+                W3::get_instance().clear_chat_text();
+
                 //开始退出
+                W3::get_instance().better_go_out();
                 W3::get_instance().set_room_id(0);
                 W3::get_instance().hide();
 
