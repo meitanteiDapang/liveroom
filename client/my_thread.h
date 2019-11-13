@@ -10,6 +10,7 @@ public:
     My_thread();
     void run();
     QEventLoop m_loop;
+    void oklala();
 public slots:
     void fuck();
 

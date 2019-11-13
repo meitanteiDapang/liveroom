@@ -53,7 +53,7 @@ void Udp_socket_stream::recv_msg()
                 break;
             }
         }
-        //qDebug() << "after" << caster_id << caster_room_id;
+        qDebug() << "after" << caster_id << caster_room_id;
         //然后向房间里的人散播火种
         for(i = 0; i < Udp_socket::get_instance().get_vec().size(); i++)
         {
@@ -61,14 +61,13 @@ void Udp_socket_stream::recv_msg()
                     Udp_socket::get_instance().get_vec()[i]->id !=
                     Udp_socket::get_instance().get_vec()[i]->room_id)
             {
-                //qDebug() << "send" << Udp_socket::get_instance().get_vec()[i]->addr
-                 //        << Udp_socket::get_instance().get_vec()[i]->port;
+                qDebug() << "send" << Udp_socket::get_instance().get_vec()[i]->addr
+                         << Udp_socket::get_instance().get_vec()[i]->port;
                 m_socket_udp.writeDatagram(buf.data(), buf.size(),
                     Udp_socket::get_instance().get_vec()[i]->addr,
                     Udp_socket::get_instance().get_vec()[i]->port);
             }
         }
-
     }
 #endif
 

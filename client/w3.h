@@ -39,6 +39,7 @@ public:
     QPixmap* m_pic_pic;
     QByteArray* m_bytearray;
     QBuffer* m_buffer;
+    bool is_capture_done;
 
     explicit W3(QWidget *parent = nullptr);
     ~W3();

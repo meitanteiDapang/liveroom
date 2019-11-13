@@ -20,6 +20,7 @@ void W3::when_captured(int id, QImage image)
     //uchar *image_uchar = image.bits();
     //qDebug() << image.size();
     *m_pic_pic = QPixmap::fromImage(image).scaledToWidth(320,Qt::FastTransformation).scaledToWidth(320, Qt::SmoothTransformation);
+    is_capture_done = true;
     //qDebug() << m_pic_pic->size();
     //emit go_on_process_picpic();
 
@@ -39,12 +40,31 @@ W3::W3(QWidget *parent) :
 
 
     //截图相关
+#if 1
+    //到达缓冲区
+    m_camera=new QCamera;//摄像头
+    m_viewfinder=new QCameraViewfinder(this);
+    m_imageCapture=new QCameraImageCapture(m_camera);//截图部件
+
+
+    m_imageCapture->setCaptureDestination(QCameraImageCapture::CaptureToBuffer);
+    //m_imageCapture->setBufferFormat(QVideoFrame::PixelFormat::Format_Jpeg);
+
+    QImageEncoderSettings image_setting;
+    image_setting.setResolution(320, 180);
+    m_imageCapture->setEncodingSettings(image_setting);
+
+#endif
+
+
+#if 0
+    //到达文件
     m_camera=new QCamera;//摄像头
     m_viewfinder=new QCameraViewfinder(this);
     m_imageCapture=new QCameraImageCapture(m_camera);//截图部件
     m_imageCapture->setCaptureDestination(QCameraImageCapture::CaptureToFile);
     m_camera->setCaptureMode(QCamera::CaptureStillImage);
-
+#endif
 
     m_camera->setViewfinder(m_viewfinder);
 
@@ -229,6 +249,7 @@ void W3::get_now_pic()
 {
     //仅仅开始捕捉
     //qDebug() <<"capture";
+    is_capture_done = false;
     m_imageCapture->capture();
 }
 
@@ -449,6 +470,7 @@ void W3::on_send_pb_clicked()
     if(msg.size() > 100)
     {
         QMessageBox::information(this, "发送", "请输入少于100字节");
+        ui->msg_le->clear();
     }
 
     Protocol pdu;

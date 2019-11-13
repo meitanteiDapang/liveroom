@@ -8,7 +8,7 @@
 #define PORT "8888"
 #define DB_PATH "/Users/yzh/Desktop/project/liveroom/server/liveroom.db"
 #define INTERVAL 3000
-#define TIMER_TIME 100
+#define TIMER_TIME 50
 
 #define RECEIVE true
 #define SEND false

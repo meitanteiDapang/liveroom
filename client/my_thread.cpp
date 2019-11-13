@@ -15,13 +15,85 @@ My_thread::My_thread()
     //connect(this, SIGNAL(go_on_process_picpic()), &m_loop, SLOT(quit()));
 }
 
+void My_thread::oklala()
+{
+
+}
+
 void My_thread::run()
 {
+
 #if 1
     while (true)
     {
         W3::get_instance().get_now_pic();
-        msleep(500);
+        //我们需要在图片截图已经保存完成后再进行下面操作，要不然画面会卡
+
+        while(W3::get_instance().is_capture_done)
+        {
+            usleep(TIMER_TIME);
+        }
+        msleep(200);
+        //已经获得图片啦
+        W3::get_instance().m_buffer->open(QIODevice::ReadWrite);
+        W3::get_instance().m_pic_pic->save(W3::get_instance().m_buffer, "png");
+
+        qint64 ret = 0;
+        qint64 iSended = 0;
+        qint64 iLefted = W3::get_instance().m_bytearray->size();
+        static const char *p = nullptr;
+        p = W3::get_instance().m_bytearray->constData();
+        //qDebug() << "\n\n total size = " << iLefted;
+        while(iLefted)
+        {
+            if (iLefted > PIC_MAX_SIZE)
+            {
+                ret = Udp_socket::get_instance().get_udp_socket().
+                        writeDatagram(p+iSended, PIC_MAX_SIZE
+                            , QHostAddress(IP_ADDRESS), QString(UDPPORT).toUShort() +1 );
+            }
+            else
+            {
+                ret = Udp_socket::get_instance().get_udp_socket().
+                        writeDatagram(p+iSended, iLefted
+                            ,QHostAddress(IP_ADDRESS), QString(UDPPORT).toUShort() +1 );
+            }
+            if (0 == ret)
+            {
+                break;
+            }
+            else if (-1 == ret)
+            {
+                ret = 0;
+            }
+            else
+            {
+                iLefted -= ret;
+                iSended += ret;
+            }
+            usleep(TIMER_TIME);
+        }
+        W3::get_instance().m_bytearray->clear();
+
+        //qDebug() << "my_thread此次截屏总共发送的数据大小 = " << iSended;
+
+        Udp_socket::get_instance().get_udp_socket().
+                                writeDatagram("end", 3
+                                    ,QHostAddress(IP_ADDRESS), QString(UDPPORT).toUShort() +1 );
+        if(!arimashida)
+        {
+            break;
+        }
+    }
+
+#endif
+
+
+#if 1
+    while (true)
+    {
+        W3::get_instance().get_now_pic();
+        msleep(2500);
         //已经获得图片啦
         W3::get_instance().m_buffer->open(QIODevice::ReadWrite);
         W3::get_instance().m_pic_pic->save(W3::get_instance().m_buffer, "png");
@@ -134,6 +206,8 @@ void My_thread::run()
 #endif
 
 }
+
+
 
 void My_thread::fuck()
 {
