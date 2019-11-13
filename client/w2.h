@@ -31,6 +31,7 @@ public:
     void clear_money_le();
     void update_w2();
     void reload_balance();
+    void set_credit_label(int credit);
 
 private slots:
     void on_refresh_pb_clicked();

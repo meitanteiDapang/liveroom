@@ -122,6 +122,11 @@ void W2::reload_balance()
     W1::get_instance().get_socket_tcp().write((char*)&pdu, sizeof(pdu));
 }
 
+void W2::set_credit_label(int credit)
+{
+    ui->credit_label->setText(QString("%1").arg(credit));
+}
+
 void W2::on_refresh_pb_clicked()
 {
     reload_stringlist();

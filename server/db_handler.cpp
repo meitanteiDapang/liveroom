@@ -69,7 +69,7 @@ int Db_handler::regist_db(const char *username, const char *password)
     }
 }
 
-int Db_handler::login_db(const char *username, const char *password, int& gid, float& gbalance)
+int Db_handler::login_db(const char *username, const char *password, int& gid, float& gbalance, int& gcredit)
 {
     QSqlQuery query;
     QString str=QString("select * from user where username=\"%1\"").
@@ -102,6 +102,7 @@ int Db_handler::login_db(const char *username, const char *password, int& gid, f
     W1::get_instance().get_online_user().push_back(id);
     gid = id;
     gbalance = balance;
+    gcredit = query.value(5).toInt();
     return 1;
 }
 
@@ -147,7 +148,7 @@ int Db_handler::topup_db(const int id, const float money, float &gbalance)
     return 1;
 }
 
-int Db_handler::get_balance_db(const int id, float &gbalance)
+int Db_handler::get_balance_db(const int id, float &gbalance, int& gcredit)
 {
     QSqlQuery query;
     QString str=QString("select * from user where id=\"%1\"").
@@ -160,11 +161,12 @@ int Db_handler::get_balance_db(const int id, float &gbalance)
     }
 
     gbalance = query.value(4).toFloat();
+    gcredit = query.value(5).toInt();
 
     return 1;
 }
 
-int Db_handler::rocket_db(const int id)
+int Db_handler::rocket_db(const int id, const int room_id)
 {
     QSqlQuery query;
     QString str=QString("select * from user where id=\"%1\"").
@@ -181,6 +183,8 @@ int Db_handler::rocket_db(const int id)
     }
     str=QString("update user set balance = balance - 500 where id=\"%1\"").
                         arg(id);
+    str=QString("update user set credit = credit + 1  where id=\"%1\"").
+                        arg(room_id);
     query.exec(str);
     return 1;
 }

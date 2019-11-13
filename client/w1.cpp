@@ -169,6 +169,7 @@ void W1::receive_msg()
                 W2::get_instance().set_balance_label(pdu.balance);
                 W2::get_instance().reload_stringlist();
                 W2::get_instance().show();
+                W2::get_instance().set_credit_label(pdu.credit);
             }
             else
             {
@@ -327,6 +328,7 @@ void W1::receive_msg()
                 //QMessageBox::information(this, "充值", "充值成功");
                 W2::get_instance().set_balance_label(pdu.balance);
                 W2::get_instance().clear_money_le();
+                W2::get_instance().set_credit_label(pdu.credit);
             }
             else//显示失败，迷
             {

@@ -35,7 +35,7 @@ void My_socket_tcp::login_handler(Protocol &pdu)
 
     pdu.msg_type = LOGIN_TYPE + ADD_RETURN;
     int ret = 1;
-    ret = Db_handler::get_instance()->login_db(pdu.username, pdu.password, pdu.id, pdu.balance);
+    ret = Db_handler::get_instance()->login_db(pdu.username, pdu.password, pdu.id, pdu.balance, pdu.credit);
 
     switch(ret)
     {
@@ -251,11 +251,13 @@ void My_socket_tcp::get_balance_handler(Protocol &pdu)
     pdu.msg_type = GET_BALANCE_TYPE+ADD_RETURN;
     int ret = 1;
     float now_balance;
-    ret = Db_handler::get_instance()->get_balance_db(pdu.id, now_balance);
+    int now_credit;
+    ret = Db_handler::get_instance()->get_balance_db(pdu.id, now_balance, now_credit);
     if(ret == 1)
     {
         pdu.result = true;
         pdu.balance = now_balance;
+        pdu.credit = now_credit;
     }
     else
     {
@@ -277,7 +279,7 @@ void My_socket_tcp::rocket_handler(Protocol &pdu)
         return;
     }
 
-    ret = Db_handler::get_instance()->rocket_db(pdu.id);
+    ret = Db_handler::get_instance()->rocket_db(pdu.id, pdu.room_id);
     if(ret == 1)
     {
         pdu.msg_type = COMMING_ROCKET_TYPE+ADD_RETURN;

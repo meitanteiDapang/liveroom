@@ -14,11 +14,11 @@ public:
     static Db_handler* get_instance();
     void whenclose();
     int regist_db(const char* username, const char* password);
-    int login_db(const char* username, const char* password, int& gid, float& gbalance);
+    int login_db(const char* username, const char* password, int& gid, float& gbalance, int& gcredit);
     void logout_db(const int id);
     int topup_db(const int id, const float money ,float& gbalance);
-    int get_balance_db(const int id, float& gbalance);
-    int rocket_db(const int id);
+    int get_balance_db(const int id, float& gbalance, int& gcredit);
+    int rocket_db(const int id, const int room_id);
     int get_roomname_by_id(const int id, char* username);
 
 

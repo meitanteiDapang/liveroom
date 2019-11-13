@@ -37,6 +37,10 @@ public:
     QLabel *label_3;
     QSpacerItem *horizontalSpacer_5;
     QLabel *balance_lb;
+    QSpacerItem *horizontalSpacer_6;
+    QLabel *label_2;
+    QSpacerItem *horizontalSpacer_7;
+    QLabel *credit_label;
     QHBoxLayout *horizontalLayout;
     QSpacerItem *horizontalSpacer;
     QVBoxLayout *verticalLayout;
@@ -72,14 +76,14 @@ public:
         horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
         label = new QLabel(W2);
         label->setObjectName(QString::fromUtf8("label"));
-        QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+        QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(label->sizePolicy().hasHeightForWidth());
         label->setSizePolicy(sizePolicy);
         label->setMinimumSize(QSize(0, 50));
         QFont font;
-        font.setPointSize(24);
+        font.setPointSize(13);
         label->setFont(font);
 
         horizontalLayout_2->addWidget(label);
@@ -103,7 +107,7 @@ public:
 
         label_3 = new QLabel(W2);
         label_3->setObjectName(QString::fromUtf8("label_3"));
-        QSizePolicy sizePolicy1(QSizePolicy::Expanding, QSizePolicy::Minimum);
+        QSizePolicy sizePolicy1(QSizePolicy::Preferred, QSizePolicy::Minimum);
         sizePolicy1.setHorizontalStretch(0);
         sizePolicy1.setVerticalStretch(50);
         sizePolicy1.setHeightForWidth(label_3->sizePolicy().hasHeightForWidth());
@@ -118,7 +122,7 @@ public:
 
         balance_lb = new QLabel(W2);
         balance_lb->setObjectName(QString::fromUtf8("balance_lb"));
-        QSizePolicy sizePolicy2(QSizePolicy::Expanding, QSizePolicy::Minimum);
+        QSizePolicy sizePolicy2(QSizePolicy::Preferred, QSizePolicy::Minimum);
         sizePolicy2.setHorizontalStretch(0);
         sizePolicy2.setVerticalStretch(60);
         sizePolicy2.setHeightForWidth(balance_lb->sizePolicy().hasHeightForWidth());
@@ -126,6 +130,24 @@ public:
         balance_lb->setFont(font);
 
         horizontalLayout_2->addWidget(balance_lb);
+
+        horizontalSpacer_6 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_2->addItem(horizontalSpacer_6);
+
+        label_2 = new QLabel(W2);
+        label_2->setObjectName(QString::fromUtf8("label_2"));
+
+        horizontalLayout_2->addWidget(label_2);
+
+        horizontalSpacer_7 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_2->addItem(horizontalSpacer_7);
+
+        credit_label = new QLabel(W2);
+        credit_label->setObjectName(QString::fromUtf8("credit_label"));
+
+        horizontalLayout_2->addWidget(credit_label);
 
 
         verticalLayout_2->addLayout(horizontalLayout_2);
@@ -230,6 +252,8 @@ public:
         username_label->setText(QCoreApplication::translate("W2", "\345\245\275\344\272\272", nullptr));
         label_3->setText(QCoreApplication::translate("W2", "\344\275\231\351\242\235", nullptr));
         balance_lb->setText(QCoreApplication::translate("W2", "0.0", nullptr));
+        label_2->setText(QCoreApplication::translate("W2", "\347\247\257\345\210\206", nullptr));
+        credit_label->setText(QCoreApplication::translate("W2", "-5", nullptr));
         refresh_pb->setText(QCoreApplication::translate("W2", "\345\210\267\346\226\260", nullptr));
         create_pb->setText(QCoreApplication::translate("W2", "\345\210\233\345\273\272\346\210\277\351\227\264", nullptr));
         topup_pb->setText(QCoreApplication::translate("W2", "\345\205\205\345\200\274", nullptr));

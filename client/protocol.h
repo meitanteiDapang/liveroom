@@ -46,6 +46,7 @@ struct Protocol
     int num;
     bool isevent;
     float money;
+    int credit;
 
 
     Protocol();
