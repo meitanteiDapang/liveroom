@@ -69,6 +69,13 @@ public:
     void modify_updu_to_have_picdata(Udp_pro& updu);
     void better_go_out();
     void pic_pic_handler_and_send();
+    void show_danmu(QString data);
+    void show_huojian();
+    void load_people();
+    void count_plus_plus();
+    void insert_into_table(Protocol& pdu);
+    void reload_people();
+
 private slots:
     void on_quit_pb_clicked();
 
@@ -79,6 +86,8 @@ private slots:
 
 
 
+    void on_refresh_people_pb_clicked();
+
 private:
     Ui::W3 *ui;
     QCamera* m_camera;
@@ -88,6 +97,8 @@ private:
     int m_room_id;//房间主播id
     QString m_room_name;
     My_thread* m_thread;
+    int m_load_count;
+    int m_rows_num;
     //My_thread_audience m_thread_audience;
     //My_thread_audience_read m_thread_audience_read;
 

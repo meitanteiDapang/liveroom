@@ -48,6 +48,13 @@ public:
         if (W1->objectName().isEmpty())
             W1->setObjectName(QString::fromUtf8("W1"));
         W1->resize(400, 400);
+        QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(W1->sizePolicy().hasHeightForWidth());
+        W1->setSizePolicy(sizePolicy);
+        W1->setMinimumSize(QSize(400, 400));
+        W1->setMaximumSize(QSize(400, 400));
         verticalLayout_3 = new QVBoxLayout(W1);
         verticalLayout_3->setObjectName(QString::fromUtf8("verticalLayout_3"));
         verticalLayout_2 = new QVBoxLayout();
@@ -76,11 +83,11 @@ public:
 
         username_le = new QLineEdit(W1);
         username_le->setObjectName(QString::fromUtf8("username_le"));
-        QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-        sizePolicy.setHorizontalStretch(0);
-        sizePolicy.setVerticalStretch(0);
-        sizePolicy.setHeightForWidth(username_le->sizePolicy().hasHeightForWidth());
-        username_le->setSizePolicy(sizePolicy);
+        QSizePolicy sizePolicy1(QSizePolicy::Expanding, QSizePolicy::Fixed);
+        sizePolicy1.setHorizontalStretch(0);
+        sizePolicy1.setVerticalStretch(0);
+        sizePolicy1.setHeightForWidth(username_le->sizePolicy().hasHeightForWidth());
+        username_le->setSizePolicy(sizePolicy1);
 
         horizontalLayout->addWidget(username_le);
 

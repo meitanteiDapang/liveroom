@@ -20,6 +20,7 @@ W2::W2(QWidget *parent) :
     m_validator = new QDoubleValidator(0.1, 1000, 2 ,this);
     m_validator->setNotation(QDoubleValidator::StandardNotation);
     ui->money_le->setValidator(m_validator);
+
 }
 
 W2::~W2()
@@ -183,6 +184,8 @@ void W2::on_lv_doubleClicked(const QModelIndex &index)
     memset(&pdu, 0 ,sizeof(pdu));
     pdu.msg_type = ENTER_ROOM_TYPE;
     pdu.id = W1::get_instance().get_id();
+
+    //qDebug() << "double clicked"<< pdu.id;
     pdu.room_id = room;
 
     strcpy(pdu.username, W1::get_instance().get_username());

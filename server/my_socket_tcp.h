@@ -23,6 +23,7 @@ public :
     void group_chat_handler(Protocol& pdu, bool& hei);
     void get_balance_handler(Protocol& pdu);
     void rocket_handler(Protocol& pdu);
+    void reload_people_handler(Protocol& pdu);
 
 public slots:
     void receive_msg();

@@ -21,6 +21,7 @@ W1::W1(QWidget *parent)
     , ui(new Ui::W1)
 {
     ui->setupUi(this);
+    setWindowTitle(QString("登录/注册"));
     //连接至服务器
     connect_to_server();
 
@@ -31,6 +32,8 @@ W1::W1(QWidget *parent)
             , this, SLOT(receive_msg()));
 
     connect(ui->password_le,SIGNAL(returnPressed()), this, SLOT(on_login_pb_clicked()));
+
+
 }
 
 W1::~W1()
@@ -170,6 +173,7 @@ void W1::receive_msg()
                 W2::get_instance().reload_stringlist();
                 W2::get_instance().show();
                 W2::get_instance().set_credit_label(pdu.credit);
+                W2::get_instance().setWindowTitle(QString("傻子直播")+QString(W1::get_instance().get_username()));
             }
             else
             {
@@ -182,7 +186,8 @@ void W1::receive_msg()
                 W3::get_instance().being_caster();
                 W3::get_instance().set_room_id(pdu.room_id);
                 W3::get_instance().set_room_name(QString(pdu.roomname));
-                W3::get_instance().setWindowTitle(QString(pdu.roomname)+QString("的直播间"));
+                W3::get_instance().reload_people();
+                W3::get_instance().setWindowTitle(QString(pdu.roomname)+QString("的直播间------爷是主播"));
                 W3::get_instance().show();
                 W2::get_instance().hide();
                 W3::get_instance().start_camera_selfie();
@@ -225,7 +230,6 @@ void W1::receive_msg()
                 W2::get_instance().reload_stringlist();
                 W2::get_instance().reload_balance();
                 W2::get_instance().show();
-
             }
 
             break;
@@ -301,7 +305,9 @@ void W1::receive_msg()
                 W3::get_instance().set_room_name(QString(pdu.roomname));
                 W3::get_instance().set_room_id(pdu.room_id);
                 W3::get_instance().add_room_name_test(QString(pdu.roomname));
-                W3::get_instance().setWindowTitle(QString(pdu.roomname)+QString("的直播间"));
+                W3::get_instance().reload_people();
+                W3::get_instance().setWindowTitle(QString(pdu.roomname)+QString("的直播间------")+
+                                                  QString(W1::get_instance().get_username()));
 
                 //等tcp告诉我oK了，我要告诉udp老子进来了
                 tell_udp_i_am_in();
@@ -319,6 +325,9 @@ void W1::receive_msg()
                 char data[192];
                 sprintf(data, "%s:%s", pdu.username, pdu.data);
                 W3::get_instance().add_chat_text(QString(data));
+                //创造弹幕并发送
+                W3::get_instance().show_danmu(QString(data));
+
             }
             break;
         case GET_BALANCE_TYPE+ADD_RETURN:
@@ -352,9 +361,23 @@ void W1::receive_msg()
                 char data[192];
                 sprintf(data, "%s发送了一个火箭", pdu.username);
                 W3::get_instance().add_chat_text(QString(data));
+
+                //显示火箭贴图
+                W3::get_instance().show_huojian();
             }
             break;
-        case 3:
+        case RELOAD_PEOPLE_TYPE+ADD_RETURN:
+            if(pdu.result)
+            {
+                //W2::get_instance();
+                W3::get_instance().insert_into_table(pdu);
+                W3::get_instance().count_plus_plus();
+                W3::get_instance().load_people();
+            }
+            else//读完啦，没啦
+            {
+
+            }
             break;
         case 4:
             break;

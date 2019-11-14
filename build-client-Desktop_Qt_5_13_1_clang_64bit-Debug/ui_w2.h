@@ -60,7 +60,9 @@ public:
     {
         if (W2->objectName().isEmpty())
             W2->setObjectName(QString::fromUtf8("W2"));
-        W2->resize(900, 900);
+        W2->resize(1000, 800);
+        W2->setMinimumSize(QSize(1000, 800));
+        W2->setMaximumSize(QSize(1000, 800));
         horizontalLayout_4 = new QHBoxLayout(W2);
         horizontalLayout_4->setObjectName(QString::fromUtf8("horizontalLayout_4"));
         horizontalLayout_3 = new QHBoxLayout();
@@ -146,6 +148,11 @@ public:
 
         credit_label = new QLabel(W2);
         credit_label->setObjectName(QString::fromUtf8("credit_label"));
+        QSizePolicy sizePolicy3(QSizePolicy::Preferred, QSizePolicy::Preferred);
+        sizePolicy3.setHorizontalStretch(80);
+        sizePolicy3.setVerticalStretch(0);
+        sizePolicy3.setHeightForWidth(credit_label->sizePolicy().hasHeightForWidth());
+        credit_label->setSizePolicy(sizePolicy3);
 
         horizontalLayout_2->addWidget(credit_label);
 
@@ -166,11 +173,11 @@ public:
 
         refresh_pb = new QPushButton(W2);
         refresh_pb->setObjectName(QString::fromUtf8("refresh_pb"));
-        QSizePolicy sizePolicy3(QSizePolicy::Minimum, QSizePolicy::Expanding);
-        sizePolicy3.setHorizontalStretch(0);
-        sizePolicy3.setVerticalStretch(0);
-        sizePolicy3.setHeightForWidth(refresh_pb->sizePolicy().hasHeightForWidth());
-        refresh_pb->setSizePolicy(sizePolicy3);
+        QSizePolicy sizePolicy4(QSizePolicy::Minimum, QSizePolicy::Expanding);
+        sizePolicy4.setHorizontalStretch(0);
+        sizePolicy4.setVerticalStretch(0);
+        sizePolicy4.setHeightForWidth(refresh_pb->sizePolicy().hasHeightForWidth());
+        refresh_pb->setSizePolicy(sizePolicy4);
         QFont font1;
         font1.setPointSize(36);
         refresh_pb->setFont(font1);
@@ -183,8 +190,8 @@ public:
 
         create_pb = new QPushButton(W2);
         create_pb->setObjectName(QString::fromUtf8("create_pb"));
-        sizePolicy3.setHeightForWidth(create_pb->sizePolicy().hasHeightForWidth());
-        create_pb->setSizePolicy(sizePolicy3);
+        sizePolicy4.setHeightForWidth(create_pb->sizePolicy().hasHeightForWidth());
+        create_pb->setSizePolicy(sizePolicy4);
         create_pb->setFont(font1);
 
         verticalLayout->addWidget(create_pb);
@@ -201,8 +208,8 @@ public:
 
         topup_pb = new QPushButton(W2);
         topup_pb->setObjectName(QString::fromUtf8("topup_pb"));
-        sizePolicy3.setHeightForWidth(topup_pb->sizePolicy().hasHeightForWidth());
-        topup_pb->setSizePolicy(sizePolicy3);
+        sizePolicy4.setHeightForWidth(topup_pb->sizePolicy().hasHeightForWidth());
+        topup_pb->setSizePolicy(sizePolicy4);
         topup_pb->setFont(font1);
 
         verticalLayout->addWidget(topup_pb);
@@ -213,8 +220,8 @@ public:
 
         quit_pb = new QPushButton(W2);
         quit_pb->setObjectName(QString::fromUtf8("quit_pb"));
-        sizePolicy3.setHeightForWidth(quit_pb->sizePolicy().hasHeightForWidth());
-        quit_pb->setSizePolicy(sizePolicy3);
+        sizePolicy4.setHeightForWidth(quit_pb->sizePolicy().hasHeightForWidth());
+        quit_pb->setSizePolicy(sizePolicy4);
         quit_pb->setFont(font1);
 
         verticalLayout->addWidget(quit_pb);

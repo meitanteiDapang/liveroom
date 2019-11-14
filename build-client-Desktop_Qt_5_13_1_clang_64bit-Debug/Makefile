@@ -60,7 +60,8 @@ SOURCES       = ../client/common.cpp \
 		../client/udp_socket_audience.cpp \
 		../client/w1.cpp \
 		../client/w2.cpp \
-		../client/w3.cpp moc_my_thread.cpp \
+		../client/w3.cpp qrc_pic.cpp \
+		moc_my_thread.cpp \
 		moc_udp_socket.cpp \
 		moc_udp_socket_audience.cpp \
 		moc_w1.cpp \
@@ -75,6 +76,7 @@ OBJECTS       = common.o \
 		w1.o \
 		w2.o \
 		w3.o \
+		qrc_pic.o \
 		moc_my_thread.o \
 		moc_udp_socket.o \
 		moc_udp_socket_audience.o \
@@ -476,6 +478,7 @@ Makefile: ../client/client.pro /Applications/qt/5.13.1/clang_64/mkspecs/macx-cla
 		/Applications/qt/5.13.1/clang_64/mkspecs/features/yacc.prf \
 		/Applications/qt/5.13.1/clang_64/mkspecs/features/lex.prf \
 		../client/client.pro \
+		../client/pic.qrc \
 		/Applications/qt/5.13.1/clang_64/lib/QtMultimediaWidgets.framework/QtMultimediaWidgets.prl \
 		/Applications/qt/5.13.1/clang_64/lib/QtMultimedia.framework/QtMultimedia.prl \
 		/Applications/qt/5.13.1/clang_64/lib/QtWidgets.framework/QtWidgets.prl \
@@ -662,6 +665,7 @@ Makefile: ../client/client.pro /Applications/qt/5.13.1/clang_64/mkspecs/macx-cla
 /Applications/qt/5.13.1/clang_64/mkspecs/features/yacc.prf:
 /Applications/qt/5.13.1/clang_64/mkspecs/features/lex.prf:
 ../client/client.pro:
+../client/pic.qrc:
 /Applications/qt/5.13.1/clang_64/lib/QtMultimediaWidgets.framework/QtMultimediaWidgets.prl:
 /Applications/qt/5.13.1/clang_64/lib/QtMultimedia.framework/QtMultimedia.prl:
 /Applications/qt/5.13.1/clang_64/lib/QtWidgets.framework/QtWidgets.prl:
@@ -697,6 +701,7 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
+	$(COPY_FILE) --parents ../client/pic.qrc $(DISTDIR)/
 	$(COPY_FILE) --parents /Applications/qt/5.13.1/clang_64/mkspecs/features/data/dummy.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../client/common.h ../client/my_thread.h ../client/protocol.h ../client/udp_socket.h ../client/udp_socket_audience.h ../client/w1.h ../client/w2.h ../client/w3.h $(DISTDIR)/
 	$(COPY_FILE) --parents ../client/common.cpp ../client/main.cpp ../client/my_thread.cpp ../client/protocol.cpp ../client/udp_socket.cpp ../client/udp_socket_audience.cpp ../client/w1.cpp ../client/w2.cpp ../client/w3.cpp $(DISTDIR)/
@@ -727,8 +732,14 @@ check: first
 
 benchmark: first
 
-compiler_rcc_make_all:
+compiler_rcc_make_all: qrc_pic.cpp
 compiler_rcc_clean:
+	-$(DEL_FILE) qrc_pic.cpp
+qrc_pic.cpp: ../client/pic.qrc \
+		/Applications/qt/5.13.1/clang_64/bin/rcc \
+		../client/pic/rocket.jpg
+	/Applications/qt/5.13.1/clang_64/bin/rcc -name pic ../client/pic.qrc -o qrc_pic.cpp
+
 compiler_moc_predefs_make_all: moc_predefs.h
 compiler_moc_predefs_clean:
 	-$(DEL_FILE) moc_predefs.h
@@ -741,6 +752,8 @@ compiler_moc_header_clean:
 moc_my_thread.cpp: ../client/my_thread.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QThread \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qthread.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QEventLoop \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qeventloop.h \
 		moc_predefs.h \
 		/Applications/qt/5.13.1/clang_64/bin/moc
 	/Applications/qt/5.13.1/clang_64/bin/moc $(DEFINES) --include /Users/yzh/Desktop/project/liveroom/build-client-Desktop_Qt_5_13_1_clang_64bit-Debug/moc_predefs.h -I/Applications/qt/5.13.1/clang_64/mkspecs/macx-clang -I/Users/yzh/Desktop/project/liveroom/client -I/Applications/qt/5.13.1/clang_64/lib/QtMultimediaWidgets.framework/Headers -I/Applications/qt/5.13.1/clang_64/lib/QtMultimedia.framework/Headers -I/Applications/qt/5.13.1/clang_64/lib/QtWidgets.framework/Headers -I/Applications/qt/5.13.1/clang_64/lib/QtGui.framework/Headers -I/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers -I/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers -I. -I/library/Developer/CommandLineTools/usr/include/c++/v1 -I/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/include -I/Library/Developer/CommandLineTools/usr/include -I/library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -F/Applications/qt/5.13.1/clang_64/lib ../client/my_thread.h -o moc_my_thread.cpp
@@ -774,6 +787,8 @@ moc_w1.cpp: ../client/w1.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/QTcpSocket \
 		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/qtcpsocket.h \
 		../client/protocol.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QByteArray \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qbytearray.h \
 		../client/common.h \
 		moc_predefs.h \
 		/Applications/qt/5.13.1/clang_64/bin/moc
@@ -786,6 +801,8 @@ moc_w2.cpp: ../client/w2.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/QTcpSocket \
 		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/qtcpsocket.h \
 		../client/protocol.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QByteArray \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qbytearray.h \
 		../client/common.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QStringListModel \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qstringlistmodel.h \
@@ -803,6 +820,8 @@ moc_w3.cpp: ../client/w3.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/QTcpSocket \
 		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/qtcpsocket.h \
 		../client/protocol.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QByteArray \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qbytearray.h \
 		../client/common.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QStringListModel \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qstringlistmodel.h \
@@ -827,11 +846,16 @@ moc_w3.cpp: ../client/w3.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/qudpsocket.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QVector \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qvector.h \
+		../client/udp_socket_audience.h \
 		../client/my_thread.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QThread \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qthread.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QEventLoop \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qeventloop.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtGui.framework/Headers/QPixmap \
 		/Applications/qt/5.13.1/clang_64/lib/QtGui.framework/Headers/qpixmap.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QBuffer \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qbuffer.h \
 		moc_predefs.h \
 		/Applications/qt/5.13.1/clang_64/bin/moc
 	/Applications/qt/5.13.1/clang_64/bin/moc $(DEFINES) --include /Users/yzh/Desktop/project/liveroom/build-client-Desktop_Qt_5_13_1_clang_64bit-Debug/moc_predefs.h -I/Applications/qt/5.13.1/clang_64/mkspecs/macx-clang -I/Users/yzh/Desktop/project/liveroom/client -I/Applications/qt/5.13.1/clang_64/lib/QtMultimediaWidgets.framework/Headers -I/Applications/qt/5.13.1/clang_64/lib/QtMultimedia.framework/Headers -I/Applications/qt/5.13.1/clang_64/lib/QtWidgets.framework/Headers -I/Applications/qt/5.13.1/clang_64/lib/QtGui.framework/Headers -I/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers -I/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers -I. -I/library/Developer/CommandLineTools/usr/include/c++/v1 -I/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/include -I/Library/Developer/CommandLineTools/usr/include -I/library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -F/Applications/qt/5.13.1/clang_64/lib ../client/w3.h -o moc_w3.cpp
@@ -863,7 +887,7 @@ compiler_yacc_impl_make_all:
 compiler_yacc_impl_clean:
 compiler_lex_make_all:
 compiler_lex_clean:
-compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean compiler_uic_clean 
+compiler_clean: compiler_rcc_clean compiler_moc_predefs_clean compiler_moc_header_clean compiler_uic_clean 
 
 ####### Compile
 
@@ -876,6 +900,8 @@ main.o: ../client/main.cpp ../client/w1.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/QTcpSocket \
 		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/qtcpsocket.h \
 		../client/protocol.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QByteArray \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qbytearray.h \
 		../client/common.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtWidgets.framework/Headers/QApplication \
 		/Applications/qt/5.13.1/clang_64/lib/QtWidgets.framework/Headers/qapplication.h
@@ -884,6 +910,8 @@ main.o: ../client/main.cpp ../client/w1.h \
 my_thread.o: ../client/my_thread.cpp ../client/my_thread.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QThread \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qthread.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QEventLoop \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qeventloop.h \
 		../client/udp_socket.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtWidgets.framework/Headers/QWidget \
 		/Applications/qt/5.13.1/clang_64/lib/QtWidgets.framework/Headers/qwidget.h \
@@ -895,6 +923,8 @@ my_thread.o: ../client/my_thread.cpp ../client/my_thread.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/QTcpSocket \
 		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/qtcpsocket.h \
 		../client/protocol.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QByteArray \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qbytearray.h \
 		../client/common.h \
 		../client/w2.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QStringListModel \
@@ -916,15 +946,18 @@ my_thread.o: ../client/my_thread.cpp ../client/my_thread.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qdebug.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtGui.framework/Headers/QImage \
 		/Applications/qt/5.13.1/clang_64/lib/QtGui.framework/Headers/qimage.h \
+		../client/udp_socket_audience.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtGui.framework/Headers/QPixmap \
 		/Applications/qt/5.13.1/clang_64/lib/QtGui.framework/Headers/qpixmap.h \
-		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QEventLoop \
-		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qeventloop.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QBuffer \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qbuffer.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QTimer \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qtimer.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o my_thread.o ../client/my_thread.cpp
 
-protocol.o: ../client/protocol.cpp ../client/protocol.h
+protocol.o: ../client/protocol.cpp ../client/protocol.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QByteArray \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qbytearray.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o protocol.o ../client/protocol.cpp
 
 udp_socket.o: ../client/udp_socket.cpp ../client/udp_socket.h \
@@ -935,6 +968,8 @@ udp_socket.o: ../client/udp_socket.cpp ../client/udp_socket.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QVector \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qvector.h \
 		../client/protocol.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QByteArray \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qbytearray.h \
 		../client/w3.h \
 		../client/w2.h \
 		../client/w1.h \
@@ -959,14 +994,21 @@ udp_socket.o: ../client/udp_socket.cpp ../client/udp_socket.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qdebug.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtGui.framework/Headers/QImage \
 		/Applications/qt/5.13.1/clang_64/lib/QtGui.framework/Headers/qimage.h \
+		../client/udp_socket_audience.h \
 		../client/my_thread.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QThread \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qthread.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QEventLoop \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qeventloop.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtGui.framework/Headers/QPixmap \
-		/Applications/qt/5.13.1/clang_64/lib/QtGui.framework/Headers/qpixmap.h
+		/Applications/qt/5.13.1/clang_64/lib/QtGui.framework/Headers/qpixmap.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QBuffer \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qbuffer.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o udp_socket.o ../client/udp_socket.cpp
 
 udp_socket_audience.o: ../client/udp_socket_audience.cpp ../client/protocol.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QByteArray \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qbytearray.h \
 		../client/w3.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtWidgets.framework/Headers/QWidget \
 		/Applications/qt/5.13.1/clang_64/lib/QtWidgets.framework/Headers/qwidget.h \
@@ -998,12 +1040,16 @@ udp_socket_audience.o: ../client/udp_socket_audience.cpp ../client/protocol.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/qudpsocket.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QVector \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qvector.h \
+		../client/udp_socket_audience.h \
 		../client/my_thread.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QThread \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qthread.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QEventLoop \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qeventloop.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtGui.framework/Headers/QPixmap \
 		/Applications/qt/5.13.1/clang_64/lib/QtGui.framework/Headers/qpixmap.h \
-		../client/udp_socket_audience.h
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QBuffer \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qbuffer.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o udp_socket_audience.o ../client/udp_socket_audience.cpp
 
 w1.o: ../client/w1.cpp ../client/w1.h \
@@ -1012,6 +1058,8 @@ w1.o: ../client/w1.cpp ../client/w1.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/QTcpSocket \
 		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/qtcpsocket.h \
 		../client/protocol.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QByteArray \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qbytearray.h \
 		../client/common.h \
 		ui_w1.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtWidgets.framework/Headers/QMessageBox \
@@ -1031,6 +1079,8 @@ w1.o: ../client/w1.cpp ../client/w1.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QVector \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qvector.h \
 		../client/udp_socket.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QTime \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qdatetime.h \
 		../client/w3.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtMultimedia.framework/Headers/QCamera \
 		/Applications/qt/5.13.1/clang_64/lib/QtMultimedia.framework/Headers/qcamera.h \
@@ -1047,8 +1097,12 @@ w1.o: ../client/w1.cpp ../client/w1.h \
 		../client/my_thread.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QThread \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qthread.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QEventLoop \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qeventloop.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtGui.framework/Headers/QPixmap \
-		/Applications/qt/5.13.1/clang_64/lib/QtGui.framework/Headers/qpixmap.h
+		/Applications/qt/5.13.1/clang_64/lib/QtGui.framework/Headers/qpixmap.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QBuffer \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qbuffer.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o w1.o ../client/w1.cpp
 
 w2.o: ../client/w2.cpp ../client/w2.h \
@@ -1058,6 +1112,8 @@ w2.o: ../client/w2.cpp ../client/w2.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/QTcpSocket \
 		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/qtcpsocket.h \
 		../client/protocol.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QByteArray \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qbytearray.h \
 		../client/common.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QStringListModel \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qstringlistmodel.h \
@@ -1084,11 +1140,16 @@ w2.o: ../client/w2.cpp ../client/w2.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/qudpsocket.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QVector \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qvector.h \
+		../client/udp_socket_audience.h \
 		../client/my_thread.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QThread \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qthread.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QEventLoop \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qeventloop.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtGui.framework/Headers/QPixmap \
 		/Applications/qt/5.13.1/clang_64/lib/QtGui.framework/Headers/qpixmap.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QBuffer \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qbuffer.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtWidgets.framework/Headers/QMessageBox \
 		/Applications/qt/5.13.1/clang_64/lib/QtWidgets.framework/Headers/qmessagebox.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o w2.o ../client/w2.cpp
@@ -1101,6 +1162,8 @@ w3.o: ../client/w3.cpp ../client/w3.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/QTcpSocket \
 		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/qtcpsocket.h \
 		../client/protocol.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QByteArray \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qbytearray.h \
 		../client/common.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QStringListModel \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qstringlistmodel.h \
@@ -1125,19 +1188,25 @@ w3.o: ../client/w3.cpp ../client/w3.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/qudpsocket.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QVector \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qvector.h \
+		../client/udp_socket_audience.h \
 		../client/my_thread.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QThread \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qthread.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QEventLoop \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qeventloop.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtGui.framework/Headers/QPixmap \
 		/Applications/qt/5.13.1/clang_64/lib/QtGui.framework/Headers/qpixmap.h \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QBuffer \
+		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qbuffer.h \
 		ui_w3.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QWaitCondition \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qwaitcondition.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtWidgets.framework/Headers/QMessageBox \
-		/Applications/qt/5.13.1/clang_64/lib/QtWidgets.framework/Headers/qmessagebox.h \
-		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QBuffer \
-		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qbuffer.h
+		/Applications/qt/5.13.1/clang_64/lib/QtWidgets.framework/Headers/qmessagebox.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o w3.o ../client/w3.cpp
+
+qrc_pic.o: qrc_pic.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o qrc_pic.o qrc_pic.cpp
 
 moc_my_thread.o: moc_my_thread.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_my_thread.o moc_my_thread.cpp

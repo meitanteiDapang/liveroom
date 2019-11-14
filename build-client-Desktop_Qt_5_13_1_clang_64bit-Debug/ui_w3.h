@@ -13,10 +13,12 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpacerItem>
+#include <QtWidgets/QTableWidget>
 #include <QtWidgets/QTextBrowser>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
@@ -26,10 +28,12 @@ QT_BEGIN_NAMESPACE
 class Ui_W3
 {
 public:
-    QGridLayout *gridLayout_2;
+    QVBoxLayout *verticalLayout_3;
     QGridLayout *gridLayout;
+    QVBoxLayout *verticalLayout_2;
     QVBoxLayout *layouto;
     QLabel *pic_label;
+    QTableWidget *tableWidget;
     QVBoxLayout *verticalLayout;
     QTextBrowser *msg_tb;
     QHBoxLayout *horizontalLayout;
@@ -37,6 +41,8 @@ public:
     QPushButton *send_pb;
     QHBoxLayout *horizontalLayout_2;
     QSpacerItem *horizontalSpacer;
+    QPushButton *refresh_people_pb;
+    QSpacerItem *horizontalSpacer_3;
     QPushButton *rocket_pb;
     QSpacerItem *horizontalSpacer_2;
     QPushButton *quit_pb;
@@ -45,31 +51,56 @@ public:
     {
         if (W3->objectName().isEmpty())
             W3->setObjectName(QString::fromUtf8("W3"));
-        W3->resize(800, 600);
-        gridLayout_2 = new QGridLayout(W3);
-        gridLayout_2->setObjectName(QString::fromUtf8("gridLayout_2"));
+        W3->resize(1000, 800);
+        QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(W3->sizePolicy().hasHeightForWidth());
+        W3->setSizePolicy(sizePolicy);
+        W3->setMinimumSize(QSize(1000, 800));
+        W3->setMaximumSize(QSize(1000, 800));
+        verticalLayout_3 = new QVBoxLayout(W3);
+        verticalLayout_3->setObjectName(QString::fromUtf8("verticalLayout_3"));
         gridLayout = new QGridLayout();
         gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
+        verticalLayout_2 = new QVBoxLayout();
+        verticalLayout_2->setObjectName(QString::fromUtf8("verticalLayout_2"));
         layouto = new QVBoxLayout();
         layouto->setObjectName(QString::fromUtf8("layouto"));
         layouto->setSizeConstraint(QLayout::SetFixedSize);
         pic_label = new QLabel(W3);
         pic_label->setObjectName(QString::fromUtf8("pic_label"));
+        pic_label->setMinimumSize(QSize(480, 270));
+        pic_label->setMaximumSize(QSize(480, 270));
 
         layouto->addWidget(pic_label);
 
 
-        gridLayout->addLayout(layouto, 0, 0, 1, 1);
+        verticalLayout_2->addLayout(layouto);
+
+        tableWidget = new QTableWidget(W3);
+        if (tableWidget->columnCount() < 2)
+            tableWidget->setColumnCount(2);
+        tableWidget->setObjectName(QString::fromUtf8("tableWidget"));
+        tableWidget->setMinimumSize(QSize(320, 200));
+        tableWidget->setMaximumSize(QSize(480, 1000));
+        tableWidget->setColumnCount(2);
+
+        verticalLayout_2->addWidget(tableWidget);
+
+
+        gridLayout->addLayout(verticalLayout_2, 0, 0, 1, 1);
 
         verticalLayout = new QVBoxLayout();
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
+        verticalLayout->setSizeConstraint(QLayout::SetFixedSize);
         msg_tb = new QTextBrowser(W3);
         msg_tb->setObjectName(QString::fromUtf8("msg_tb"));
-        QSizePolicy sizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
-        sizePolicy.setHorizontalStretch(100);
-        sizePolicy.setVerticalStretch(0);
-        sizePolicy.setHeightForWidth(msg_tb->sizePolicy().hasHeightForWidth());
-        msg_tb->setSizePolicy(sizePolicy);
+        QSizePolicy sizePolicy1(QSizePolicy::Minimum, QSizePolicy::Expanding);
+        sizePolicy1.setHorizontalStretch(100);
+        sizePolicy1.setVerticalStretch(0);
+        sizePolicy1.setHeightForWidth(msg_tb->sizePolicy().hasHeightForWidth());
+        msg_tb->setSizePolicy(sizePolicy1);
 
         verticalLayout->addWidget(msg_tb);
 
@@ -98,13 +129,22 @@ public:
 
         horizontalLayout_2->addItem(horizontalSpacer);
 
+        refresh_people_pb = new QPushButton(W3);
+        refresh_people_pb->setObjectName(QString::fromUtf8("refresh_people_pb"));
+
+        horizontalLayout_2->addWidget(refresh_people_pb);
+
+        horizontalSpacer_3 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_2->addItem(horizontalSpacer_3);
+
         rocket_pb = new QPushButton(W3);
         rocket_pb->setObjectName(QString::fromUtf8("rocket_pb"));
-        QSizePolicy sizePolicy1(QSizePolicy::Minimum, QSizePolicy::Minimum);
-        sizePolicy1.setHorizontalStretch(0);
-        sizePolicy1.setVerticalStretch(30);
-        sizePolicy1.setHeightForWidth(rocket_pb->sizePolicy().hasHeightForWidth());
-        rocket_pb->setSizePolicy(sizePolicy1);
+        QSizePolicy sizePolicy2(QSizePolicy::Minimum, QSizePolicy::Minimum);
+        sizePolicy2.setHorizontalStretch(0);
+        sizePolicy2.setVerticalStretch(30);
+        sizePolicy2.setHeightForWidth(rocket_pb->sizePolicy().hasHeightForWidth());
+        rocket_pb->setSizePolicy(sizePolicy2);
         QFont font;
         font.setPointSize(18);
         rocket_pb->setFont(font);
@@ -120,17 +160,17 @@ public:
 
         quit_pb = new QPushButton(W3);
         quit_pb->setObjectName(QString::fromUtf8("quit_pb"));
-        QSizePolicy sizePolicy2(QSizePolicy::Minimum, QSizePolicy::Minimum);
-        sizePolicy2.setHorizontalStretch(0);
-        sizePolicy2.setVerticalStretch(0);
-        sizePolicy2.setHeightForWidth(quit_pb->sizePolicy().hasHeightForWidth());
-        quit_pb->setSizePolicy(sizePolicy2);
+        QSizePolicy sizePolicy3(QSizePolicy::Minimum, QSizePolicy::Minimum);
+        sizePolicy3.setHorizontalStretch(0);
+        sizePolicy3.setVerticalStretch(0);
+        sizePolicy3.setHeightForWidth(quit_pb->sizePolicy().hasHeightForWidth());
+        quit_pb->setSizePolicy(sizePolicy3);
         quit_pb->setFont(font);
 
         gridLayout->addWidget(quit_pb, 1, 1, 1, 1);
 
 
-        gridLayout_2->addLayout(gridLayout, 0, 0, 1, 1);
+        verticalLayout_3->addLayout(gridLayout);
 
 
         retranslateUi(W3);
@@ -148,6 +188,7 @@ public:
 "</style></head><body style=\" font-family:'.AppleSystemUIFont'; font-size:13pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'.AppleSystemUIFont';\"><br /></p></body></html>", nullptr));
         send_pb->setText(QCoreApplication::translate("W3", "\345\217\221\351\200\201", nullptr));
+        refresh_people_pb->setText(QCoreApplication::translate("W3", "\345\210\267\346\226\260", nullptr));
         rocket_pb->setText(QCoreApplication::translate("W3", "\347\201\253\347\256\255/500", nullptr));
         quit_pb->setText(QCoreApplication::translate("W3", "\351\200\200\345\207\272", nullptr));
     } // retranslateUi

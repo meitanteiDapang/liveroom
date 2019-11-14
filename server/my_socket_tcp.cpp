@@ -224,12 +224,14 @@ void My_socket_tcp::enter_room_handler(Protocol &pdu)
 //        }
 
         //qDebug() << 5;
+        iter->push_back(pdu.id);
         memset(&pdu, 0, sizeof(pdu));
         //最后向刚进入房间用户发送包包
         pdu.msg_type = ENTER_ROOM_TYPE+ADD_RETURN;
         pdu.result = true;
         pdu.room_id = room_id;
-        iter->push_back(pdu.id);
+
+        //qDebug() << "push_back" << pdu.id;
         Db_handler::get_instance()->get_roomname_by_id(pdu.room_id, pdu.roomname);
     }
     else
@@ -299,6 +301,29 @@ void My_socket_tcp::rocket_handler(Protocol &pdu)
     pdu.msg_type = SEND_ROCKET_TYPE+ADD_RETURN;
 }
 
+void My_socket_tcp::reload_people_handler(Protocol &pdu)
+{
+    pdu.msg_type = RELOAD_PEOPLE_TYPE + ADD_RETURN;
+    //qDebug() << W1::get_instance().get_rooms().size() << pdu.count;
+    if(W1::get_instance().get_rooms().find(pdu.room_id) == W1::get_instance().get_rooms().end())
+    {
+        return;
+    }
+
+    if(pdu.count < W1::get_instance().get_rooms()[pdu.room_id].size())
+    {
+        pdu.result = true;
+        //qDebug() << W1::get_instance().get_rooms()[pdu.room_id][pdu.count];
+        pdu.id = W1::get_instance().get_rooms()[pdu.room_id][pdu.count];
+        Db_handler::get_instance()->get_roomname_by_id(pdu.id, pdu.username);
+        //pdu.num = iter->size() - 1;
+    }
+    else
+    {
+        pdu.result = false;
+    }
+}
+
 void My_socket_tcp::receive_msg()
 {
     Protocol pdu;
@@ -338,6 +363,7 @@ void My_socket_tcp::receive_msg()
         case ENTER_ROOM_TYPE://观众啦
             //qDebug() << pdu.room_id;
             //qDebug() << pdu.username;
+            //qDebug() <<"eneter"<< pdu.id;
             enter_room_handler(pdu);
             break;
         case GROUP_CHAT_TYPE:
@@ -345,13 +371,12 @@ void My_socket_tcp::receive_msg()
             break;
         case GET_BALANCE_TYPE:
             get_balance_handler(pdu);
-
             break;
         case SEND_ROCKET_TYPE:
             rocket_handler(pdu);
             break;
-        case 10000001:
-
+        case RELOAD_PEOPLE_TYPE:
+            reload_people_handler(pdu);
             break;
         case 10000006:
 

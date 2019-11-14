@@ -19,7 +19,7 @@ void W3::when_captured(int id, QImage image)
     //static int i = 0;
     //uchar *image_uchar = image.bits();
     //qDebug() << image.size();
-    *m_pic_pic = QPixmap::fromImage(image).scaledToWidth(320,Qt::FastTransformation).scaledToWidth(320, Qt::SmoothTransformation);
+    *m_pic_pic = QPixmap::fromImage(image).scaledToWidth(480,Qt::FastTransformation).scaledToWidth(480, Qt::SmoothTransformation);
     is_capture_done = true;
     //qDebug() << m_pic_pic->size();
     //emit go_on_process_picpic();
@@ -38,6 +38,14 @@ W3::W3(QWidget *parent) :
     m_bytearray = new QByteArray;
     m_buffer = new QBuffer(m_bytearray);
 
+    ui->tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->tableWidget->setColumnWidth(0, 225);
+    ui->tableWidget->setColumnWidth(1, 225);
+    m_rows_num = 0;
+    QStringList header;
+    header << "id" << "用户名";
+    ui->tableWidget->setHorizontalHeaderLabels(header);
 
     //截图相关
 #if 1
@@ -48,10 +56,10 @@ W3::W3(QWidget *parent) :
 
 
     m_imageCapture->setCaptureDestination(QCameraImageCapture::CaptureToBuffer);
-    //m_imageCapture->setBufferFormat(QVideoFrame::PixelFormat::Format_Jpeg);
+
 
     QImageEncoderSettings image_setting;
-    image_setting.setResolution(320, 180);
+    image_setting.setResolution(480, 270);
     m_imageCapture->setEncodingSettings(image_setting);
 
 #endif
@@ -404,6 +412,51 @@ void W3::pic_pic_handler_and_send()
 #endif
 }
 
+void W3::show_danmu(QString data)
+{
+
+}
+
+void W3::show_huojian()
+{
+
+}
+
+void W3::load_people()
+{
+    Protocol pdu;
+    memset(&pdu, 0 ,sizeof(pdu));
+    pdu.count = m_load_count;
+    pdu.msg_type = RELOAD_PEOPLE_TYPE;
+    pdu.room_id = m_room_id;
+    //qDebug()<< "create_pb_clicked" << pdu.id;
+    W1::get_instance().get_socket_tcp().write((char*)&pdu, sizeof(pdu));
+}
+
+void W3::count_plus_plus()
+{
+    m_load_count++;
+}
+
+void W3::insert_into_table(Protocol& pdu)
+{
+    ui->tableWidget->setRowCount(pdu.count+1);
+    QTableWidgetItem* ppid = new QTableWidgetItem;
+    QTableWidgetItem* ppusername = new QTableWidgetItem;
+    ppid->setText(QString("%1").arg(pdu.id));
+    ppusername->setText(QString(pdu.username));
+    ui->tableWidget->setItem(pdu.count, 0, ppid);
+    ui->tableWidget->setItem(pdu.count,1, ppusername);
+
+}
+
+void W3::reload_people()
+{
+    ui->tableWidget->setRowCount(0);
+    m_load_count = 0;
+    load_people();
+}
+
 void W3::on_quit_pb_clicked()
 {
     //if(m_is_caster)
@@ -506,3 +559,8 @@ void W3::on_rocket_pb_clicked()
 
 
 
+
+void W3::on_refresh_people_pb_clicked()
+{
+    reload_people();
+}
