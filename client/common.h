@@ -8,6 +8,7 @@
 //#define DB_PATH "/Users/nmsl"
 #define INTERVAL 3000
 #define TIMER_TIME 50
+#define ROCKET_INTERVAL 100
 
 #define RECEIVE true
 #define SEND false

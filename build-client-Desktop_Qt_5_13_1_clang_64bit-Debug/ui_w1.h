@@ -104,6 +104,7 @@ public:
 
         password_le = new QLineEdit(W1);
         password_le->setObjectName(QString::fromUtf8("password_le"));
+        password_le->setEchoMode(QLineEdit::Password);
 
         horizontalLayout_2->addWidget(password_le);
 

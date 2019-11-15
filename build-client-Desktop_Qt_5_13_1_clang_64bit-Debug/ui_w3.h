@@ -28,13 +28,14 @@ QT_BEGIN_NAMESPACE
 class Ui_W3
 {
 public:
-    QVBoxLayout *verticalLayout_3;
+    QGridLayout *gridLayout_2;
     QGridLayout *gridLayout;
     QVBoxLayout *verticalLayout_2;
     QVBoxLayout *layouto;
     QLabel *pic_label;
     QTableWidget *tableWidget;
-    QVBoxLayout *verticalLayout;
+    QVBoxLayout *right_layout;
+    QVBoxLayout *the_layout;
     QTextBrowser *msg_tb;
     QHBoxLayout *horizontalLayout;
     QLineEdit *msg_le;
@@ -59,8 +60,8 @@ public:
         W3->setSizePolicy(sizePolicy);
         W3->setMinimumSize(QSize(1000, 800));
         W3->setMaximumSize(QSize(1000, 800));
-        verticalLayout_3 = new QVBoxLayout(W3);
-        verticalLayout_3->setObjectName(QString::fromUtf8("verticalLayout_3"));
+        gridLayout_2 = new QGridLayout(W3);
+        gridLayout_2->setObjectName(QString::fromUtf8("gridLayout_2"));
         gridLayout = new QGridLayout();
         gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
         verticalLayout_2 = new QVBoxLayout();
@@ -91,9 +92,11 @@ public:
 
         gridLayout->addLayout(verticalLayout_2, 0, 0, 1, 1);
 
-        verticalLayout = new QVBoxLayout();
-        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
-        verticalLayout->setSizeConstraint(QLayout::SetFixedSize);
+        right_layout = new QVBoxLayout();
+        right_layout->setObjectName(QString::fromUtf8("right_layout"));
+        right_layout->setSizeConstraint(QLayout::SetFixedSize);
+        the_layout = new QVBoxLayout();
+        the_layout->setObjectName(QString::fromUtf8("the_layout"));
         msg_tb = new QTextBrowser(W3);
         msg_tb->setObjectName(QString::fromUtf8("msg_tb"));
         QSizePolicy sizePolicy1(QSizePolicy::Minimum, QSizePolicy::Expanding);
@@ -102,7 +105,10 @@ public:
         sizePolicy1.setHeightForWidth(msg_tb->sizePolicy().hasHeightForWidth());
         msg_tb->setSizePolicy(sizePolicy1);
 
-        verticalLayout->addWidget(msg_tb);
+        the_layout->addWidget(msg_tb);
+
+
+        right_layout->addLayout(the_layout);
 
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
@@ -117,10 +123,10 @@ public:
         horizontalLayout->addWidget(send_pb);
 
 
-        verticalLayout->addLayout(horizontalLayout);
+        right_layout->addLayout(horizontalLayout);
 
 
-        gridLayout->addLayout(verticalLayout, 0, 1, 1, 1);
+        gridLayout->addLayout(right_layout, 0, 1, 1, 1);
 
         horizontalLayout_2 = new QHBoxLayout();
         horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
@@ -170,7 +176,7 @@ public:
         gridLayout->addWidget(quit_pb, 1, 1, 1, 1);
 
 
-        verticalLayout_3->addLayout(gridLayout);
+        gridLayout_2->addLayout(gridLayout, 0, 0, 1, 1);
 
 
         retranslateUi(W3);

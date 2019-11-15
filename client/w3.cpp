@@ -5,6 +5,11 @@
 #include <QMessageBox>
 #include <QCameraImageCapture>
 #include <QBuffer>
+#include <QTimer>
+#include <QPainter>
+#include <QPicture>
+
+
 //#include
 
 //extern int id_global;
@@ -37,6 +42,15 @@ W3::W3(QWidget *parent) :
     //存放要发送的屏幕数据
     m_bytearray = new QByteArray;
     m_buffer = new QBuffer(m_bytearray);
+    m_rocket_label = new QLabel(this);
+    //m_rocket_label->setText("这是火箭");
+    m_rocket_label->resize(150,300);
+    //m_rocket_label->setPixmap(QPixmap("/Users/yzh/Desktop/project/liveroom/client/pic/rocket.png"));
+    m_rocket_label->setPixmap(QPixmap(":/pic/rocket.png"));
+    m_rocket_label->setScaledContents(true);
+    m_rocket_label->hide();
+
+
 
     ui->tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -420,6 +434,177 @@ void W3::show_danmu(QString data)
 void W3::show_huojian()
 {
 
+//火箭火箭
+#if 1
+    m_timer_vec.clear();
+    m_rocket_label->setParent(this);
+    m_rocket_label->show();
+    m_rocket_label->raise();
+    m_ix = 500;
+    m_iy = 500;
+    m_rocket_label->move(m_ix, m_iy);
+    QTimer* timer = new QTimer();
+    m_timer_vec.push_back(timer);
+    timer->start(ROCKET_INTERVAL);
+    connect(timer, SIGNAL(timeout()), this , SLOT(rocket_move()));
+
+
+
+
+
+    //m_rocket_label->setPixmap(QPixmap("/Users/yzh/Desktop/project/liveroom/client/pic/rocket.jpg"));
+
+
+    //ui->msg_tb->show();
+
+#endif
+
+//可行方案
+#if 0
+
+    //qDebug() << "oooo";
+    //ui->msg_tb->hide();
+    //ui->the_layout->addWidget(m_rocket_label);
+    m_rocket_label->setParent(this);
+    m_rocket_label->show();
+    //m_rocket_label->setPixmap(QPixmap("/Users/yzh/Desktop/project/liveroom/client/pic/rocket.jpg"));
+    m_rocket_label->raise();
+    int ix = 500;
+    int iy = 500;
+    while(iy>0)
+    {
+        m_rocket_label->move(ix,iy);
+        update();
+        iy -= 50;
+        update();
+        QEventLoop loop;
+        QTimer::singleShot(200, &loop, SLOT(quit()));
+        loop.exec();
+    }
+
+    m_rocket_label->setParent(nullptr);
+    //ui->msg_tb->show();
+
+#endif
+
+#if 0
+    //qDebug() << "oooo";
+    //ui->msg_tb->hide();
+    //ui->the_layout->addWidget(m_rocket_label);
+    QLabel* rocket_label = new QLabel(this);
+    rocket_label->setText("wtfffff");
+    rocket_label->raise();
+    int ix = 500;
+    int iy = 500;
+    while(iy>0)
+    {
+        rocket_label->move(ix, iy);
+        rocket_label->raise();
+        iy -= 5;
+        update();
+        QEventLoop loop;
+        QTimer::singleShot(20, &loop, SLOT(quit()));
+        loop.exec();
+    }
+
+    rocket_label->setParent(nullptr);
+    delete rocket_label;
+    //ui->msg_tb->show();
+
+#endif
+
+#if 0
+    //qDebug() << "oooo";
+    ui->msg_tb->hide();
+    ui->the_layout->addWidget(m_rocket_label);
+    m_rocket_label->raise();
+    int ix = 0;
+    int iy = 500;
+    while(iy>0)
+    {
+        iy -= 50;
+        update();
+        QEventLoop loop;
+        QTimer::singleShot(200, &loop, SLOT(quit()));
+        loop.exec();
+    }
+
+    m_rocket_label->setParent(nullptr);
+    ui->msg_tb->show();
+
+#endif
+#if 0
+    QPainter painter(W3::get_instance().get_msg_tb());
+    QPixmap ro(":/pic/rocket.png");
+    int ix = 500;
+    int iy = 500;
+    while(iy>0)
+    {
+        painter.drawPixmap(ix,iy,150,300, ro);
+        iy -= 50;
+        update();
+        W3::get_instance().repaint();
+        QEventLoop loop;
+        QTimer::singleShot(200, &loop, SLOT(quit()));
+        loop.exec();
+    }
+#endif
+
+
+#if 0
+    int ix = 0;
+    int iy = 500;
+
+    m_rocket_label->setParent(ui->msg_tb);
+    while(iy>0)
+    {
+        qDebug() << "iy" << iy;
+
+        iy-= 50;
+        QEventLoop loop;
+        QTimer::singleShot(200, &loop, SLOT(quit()));
+        loop.exec();
+    }
+    m_rocket_label->setParent(ui->msg_tb);
+#endif
+
+
+#if 0
+    //qDebug() << "oooo";
+    QLabel* lll = new QLabel(W3::get_instance().get_msg_tb());
+    lll->raise();
+    //lll->setPixmap(QPixmap(":/pic/rocket.png"));
+    lll->setPixmap(QPixmap("/Users/yzh/Desktop/project/liveroom/client/pic/rocket.png"));
+    //lll->setText("cncncncncn");
+    ui->pic_label->setPixmap(QPixmap("/Users/yzh/Desktop/project/liveroom/client/pic/rocket.png"));
+    int ix = 0;
+    int iy = 500;
+    lll->setGeometry(ix,iy,150,300);
+    while(iy>0)
+    {
+        qDebug() << "iy" << iy;
+        lll->move(ix,iy);
+        iy -= 50;
+        update();
+        QEventLoop loop;
+        QTimer::singleShot(200, &loop, SLOT(quit()));
+        loop.exec();
+    }
+    lll->clear();
+    lll->hide();
+    lll->close();
+    delete lll;
+#endif
+
+#if 0
+    //改到线程去
+    static Rocket_thread ooo;
+    if(ooo.isRunning())
+    {
+        ooo.wait();
+    }
+    ooo.run();
+#endif
 }
 
 void W3::load_people()
@@ -456,6 +641,35 @@ void W3::reload_people()
     m_load_count = 0;
     load_people();
 }
+
+QTextBrowser *W3::get_msg_tb()
+{
+    return ui->msg_tb;
+}
+
+void W3::set_rocket_label()
+{
+    m_rocket_label->setParent(ui->msg_tb);
+    m_rocket_label->setWindowFlag(Qt::WindowStaysOnTopHint);
+}
+
+void W3::unset_rocket_label()
+{
+    m_rocket_label->setParent(nullptr);
+}
+
+void W3::unset_msg_tb()
+{
+    ui->msg_tb->hide();
+}
+
+
+void W3::set_msg_tb()
+{
+    ui->msg_tb->show();
+}
+
+
 
 void W3::on_quit_pb_clicked()
 {
@@ -550,6 +764,34 @@ void W3::on_rocket_pb_clicked()
     strcpy(pdu.username, W1::get_instance().get_username());
 
     W1::get_instance().get_socket_tcp().write((char*)&pdu, sizeof(pdu));
+}
+
+void W3::rocket_move()
+{
+    if(m_iy > 0)
+    {
+        m_rocket_label->move(m_ix,m_iy);
+        update();
+        m_iy -= 15;
+
+        QTimer* timer = new QTimer();
+
+        timer->start(ROCKET_INTERVAL);
+        m_timer_vec.push_back(timer);
+        connect(timer, SIGNAL(timeout()), this , SLOT(rocket_move()));
+
+
+    }
+    else
+    {
+        int len = m_timer_vec.size();
+        for(int i = 0; i < len; i++)
+        {
+            delete m_timer_vec[i];
+        }
+        m_timer_vec.clear();
+        m_rocket_label->setParent(nullptr);
+    }
 }
 
 

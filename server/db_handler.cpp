@@ -183,6 +183,7 @@ int Db_handler::rocket_db(const int id, const int room_id)
     }
     str=QString("update user set balance = balance - 500 where id=\"%1\"").
                         arg(id);
+    query.exec(str);
     str=QString("update user set credit = credit + 1  where id=\"%1\"").
                         arg(room_id);
     query.exec(str);

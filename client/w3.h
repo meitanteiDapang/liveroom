@@ -20,6 +20,10 @@
 #include <QPixmap>
 #include <QByteArray>
 #include <QBuffer>
+#include <rocket_thread.h>
+#include <QTextBrowser>
+#include <QLabel>
+#include <QTimer>
 
 namespace Ui {
 class W3;
@@ -75,6 +79,12 @@ public:
     void count_plus_plus();
     void insert_into_table(Protocol& pdu);
     void reload_people();
+    QTextBrowser* get_msg_tb();
+    void set_msg_tb();
+    void unset_msg_tb();
+    void set_rocket_label();
+    void unset_rocket_label();
+
 
 private slots:
     void on_quit_pb_clicked();
@@ -83,6 +93,7 @@ private slots:
 
     void on_rocket_pb_clicked();
 
+    void rocket_move();
 
 
 
@@ -99,6 +110,11 @@ private:
     My_thread* m_thread;
     int m_load_count;
     int m_rows_num;
+    QLabel* m_rocket_label;
+    Rocket_thread m_rocket_thread;
+    QVector<QTimer*> m_timer_vec;
+    int m_ix;
+    int m_iy;
     //My_thread_audience m_thread_audience;
     //My_thread_audience_read m_thread_audience_read;
 

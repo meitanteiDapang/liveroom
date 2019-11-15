@@ -23,6 +23,7 @@ SOURCES += \
     #my_thread_audience_read.cpp \
     #myeventloop.cpp \
     protocol.cpp \
+    rocket_thread.cpp \
     udp_socket.cpp \
     udp_socket_audience.cpp \
     w1.cpp \
@@ -36,6 +37,7 @@ HEADERS += \
     #my_thread_audience_read.h \
     #myeventloop.h \
     protocol.h \
+    rocket_thread.h \
     udp_socket.h \
     udp_socket_audience.h \
     w1.h \
