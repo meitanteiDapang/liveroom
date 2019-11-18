@@ -4,6 +4,8 @@
 #include <QWidget>
 #include "udp_socket.h"
 
+//作为b号端口，将客户端主播发来的所有数据流根据a号端口中的vec转发到指定观众那
+
 class Udp_socket_stream : public QWidget
 {
     Q_OBJECT

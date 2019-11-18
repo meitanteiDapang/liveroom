@@ -57,13 +57,11 @@ SOURCES       = ../server/common.cpp \
 		../server/main.cpp \
 		../server/my_server_tcp.cpp \
 		../server/my_socket_tcp.cpp \
-		../server/my_thread.cpp \
 		../server/protocol.cpp \
 		../server/udp_socket.cpp \
 		../server/udp_socket_stream.cpp \
 		../server/w1.cpp moc_my_server_tcp.cpp \
 		moc_my_socket_tcp.cpp \
-		moc_my_thread.cpp \
 		moc_udp_socket.cpp \
 		moc_udp_socket_stream.cpp \
 		moc_w1.cpp
@@ -72,14 +70,12 @@ OBJECTS       = common.o \
 		main.o \
 		my_server_tcp.o \
 		my_socket_tcp.o \
-		my_thread.o \
 		protocol.o \
 		udp_socket.o \
 		udp_socket_stream.o \
 		w1.o \
 		moc_my_server_tcp.o \
 		moc_my_socket_tcp.o \
-		moc_my_thread.o \
 		moc_udp_socket.o \
 		moc_udp_socket_stream.o \
 		moc_w1.o
@@ -265,7 +261,6 @@ DIST          = /Applications/qt/5.13.1/clang_64/mkspecs/features/spec_pre.prf \
 		../server/db_handler.h \
 		../server/my_server_tcp.h \
 		../server/my_socket_tcp.h \
-		../server/my_thread.h \
 		../server/protocol.h \
 		../server/udp_socket.h \
 		../server/udp_socket_stream.h \
@@ -274,7 +269,6 @@ DIST          = /Applications/qt/5.13.1/clang_64/mkspecs/features/spec_pre.prf \
 		../server/main.cpp \
 		../server/my_server_tcp.cpp \
 		../server/my_socket_tcp.cpp \
-		../server/my_thread.cpp \
 		../server/protocol.cpp \
 		../server/udp_socket.cpp \
 		../server/udp_socket_stream.cpp \
@@ -700,8 +694,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /Applications/qt/5.13.1/clang_64/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../server/common.h ../server/db_handler.h ../server/my_server_tcp.h ../server/my_socket_tcp.h ../server/my_thread.h ../server/protocol.h ../server/udp_socket.h ../server/udp_socket_stream.h ../server/w1.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../server/common.cpp ../server/db_handler.cpp ../server/main.cpp ../server/my_server_tcp.cpp ../server/my_socket_tcp.cpp ../server/my_thread.cpp ../server/protocol.cpp ../server/udp_socket.cpp ../server/udp_socket_stream.cpp ../server/w1.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../server/common.h ../server/db_handler.h ../server/my_server_tcp.h ../server/my_socket_tcp.h ../server/protocol.h ../server/udp_socket.h ../server/udp_socket_stream.h ../server/w1.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../server/common.cpp ../server/db_handler.cpp ../server/main.cpp ../server/my_server_tcp.cpp ../server/my_socket_tcp.cpp ../server/protocol.cpp ../server/udp_socket.cpp ../server/udp_socket_stream.cpp ../server/w1.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../server/w1.ui $(DISTDIR)/
 
 
@@ -737,9 +731,9 @@ compiler_moc_predefs_clean:
 moc_predefs.h: /Applications/qt/5.13.1/clang_64/mkspecs/features/data/dummy.cpp
 	/library/Developer/CommandLineTools/usr/bin/clang++ -pipe -stdlib=libc++ -g -std=gnu++11 $(EXPORT_ARCH_ARGS) -isysroot /library/Developer/CommandLineTools/SDKs/MacOSX.sdk -mmacosx-version-min=10.12 -Wall -W -dM -E -o moc_predefs.h /Applications/qt/5.13.1/clang_64/mkspecs/features/data/dummy.cpp
 
-compiler_moc_header_make_all: moc_my_server_tcp.cpp moc_my_socket_tcp.cpp moc_my_thread.cpp moc_udp_socket.cpp moc_udp_socket_stream.cpp moc_w1.cpp
+compiler_moc_header_make_all: moc_my_server_tcp.cpp moc_my_socket_tcp.cpp moc_udp_socket.cpp moc_udp_socket_stream.cpp moc_w1.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_my_server_tcp.cpp moc_my_socket_tcp.cpp moc_my_thread.cpp moc_udp_socket.cpp moc_udp_socket_stream.cpp moc_w1.cpp
+	-$(DEL_FILE) moc_my_server_tcp.cpp moc_my_socket_tcp.cpp moc_udp_socket.cpp moc_udp_socket_stream.cpp moc_w1.cpp
 moc_my_server_tcp.cpp: ../server/my_server_tcp.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/QTcpServer \
 		/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers/qtcpserver.h \
@@ -772,13 +766,6 @@ moc_my_socket_tcp.cpp: ../server/my_socket_tcp.h \
 		moc_predefs.h \
 		/Applications/qt/5.13.1/clang_64/bin/moc
 	/Applications/qt/5.13.1/clang_64/bin/moc $(DEFINES) --include /Users/yzh/Desktop/project/liveroom/build-server-Desktop_Qt_5_13_1_clang_64bit-Debug/moc_predefs.h -I/Applications/qt/5.13.1/clang_64/mkspecs/macx-clang -I/Users/yzh/Desktop/project/liveroom/server -I/Applications/qt/5.13.1/clang_64/lib/QtWidgets.framework/Headers -I/Applications/qt/5.13.1/clang_64/lib/QtGui.framework/Headers -I/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers -I/Applications/qt/5.13.1/clang_64/lib/QtSql.framework/Headers -I/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers -I. -I/library/Developer/CommandLineTools/usr/include/c++/v1 -I/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/include -I/Library/Developer/CommandLineTools/usr/include -I/library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -F/Applications/qt/5.13.1/clang_64/lib ../server/my_socket_tcp.h -o moc_my_socket_tcp.cpp
-
-moc_my_thread.cpp: ../server/my_thread.h \
-		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QThread \
-		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qthread.h \
-		moc_predefs.h \
-		/Applications/qt/5.13.1/clang_64/bin/moc
-	/Applications/qt/5.13.1/clang_64/bin/moc $(DEFINES) --include /Users/yzh/Desktop/project/liveroom/build-server-Desktop_Qt_5_13_1_clang_64bit-Debug/moc_predefs.h -I/Applications/qt/5.13.1/clang_64/mkspecs/macx-clang -I/Users/yzh/Desktop/project/liveroom/server -I/Applications/qt/5.13.1/clang_64/lib/QtWidgets.framework/Headers -I/Applications/qt/5.13.1/clang_64/lib/QtGui.framework/Headers -I/Applications/qt/5.13.1/clang_64/lib/QtNetwork.framework/Headers -I/Applications/qt/5.13.1/clang_64/lib/QtSql.framework/Headers -I/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers -I. -I/library/Developer/CommandLineTools/usr/include/c++/v1 -I/Library/Developer/CommandLineTools/usr/lib/clang/11.0.0/include -I/Library/Developer/CommandLineTools/usr/include -I/library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -F/Applications/qt/5.13.1/clang_64/lib ../server/my_thread.h -o moc_my_thread.cpp
 
 moc_udp_socket.cpp: ../server/udp_socket.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtWidgets.framework/Headers/QWidget \
@@ -987,11 +974,6 @@ my_socket_tcp.o: ../server/my_socket_tcp.cpp ../server/my_socket_tcp.h \
 		../server/udp_socket_stream.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o my_socket_tcp.o ../server/my_socket_tcp.cpp
 
-my_thread.o: ../server/my_thread.cpp ../server/my_thread.h \
-		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QThread \
-		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/qthread.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o my_thread.o ../server/my_thread.cpp
-
 protocol.o: ../server/protocol.cpp ../server/protocol.h \
 		../server/common.h \
 		/Applications/qt/5.13.1/clang_64/lib/QtCore.framework/Headers/QMap \
@@ -1069,9 +1051,6 @@ moc_my_server_tcp.o: moc_my_server_tcp.cpp
 
 moc_my_socket_tcp.o: moc_my_socket_tcp.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_my_socket_tcp.o moc_my_socket_tcp.cpp
-
-moc_my_thread.o: moc_my_thread.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_my_thread.o moc_my_thread.cpp
 
 moc_udp_socket.o: moc_udp_socket.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_udp_socket.o moc_udp_socket.cpp

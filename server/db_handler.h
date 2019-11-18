@@ -5,6 +5,8 @@
 #include <QSqlQuery>
 #include <QSqlError>
 
+//服务器端的数据库处理文件， 所有需要数据库处理的过程都在这边被封装成函数
+
 class Db_handler
 {
 public:

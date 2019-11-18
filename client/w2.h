@@ -22,7 +22,11 @@ public:
     virtual void closeEvent(QCloseEvent *event);
     void set_username_label(char* username);
     void set_balance_label(float balance);
+
+    //向服务器发送下一次load list请求
     void load_room_list();
+
+    //将ddd插入到insert_lv中
     void insert_lv(QString ddd);
     void count_list_plus_plus();
     void set_count_list_zero();
@@ -30,6 +34,8 @@ public:
     void reload_stringlist();
     void clear_money_le();
     void update_w2();
+
+    //向服务器重载余额
     void reload_balance();
     void set_credit_label(int credit);
 
@@ -49,7 +55,7 @@ private:
     int m_count_list;
     QStringListModel* m_lm;
     QStringList *m_stringlist;
-    QDoubleValidator *m_validator;
+    QDoubleValidator *m_validator;//确定充值金额输入范围
 };
 
 #endif // W2_H

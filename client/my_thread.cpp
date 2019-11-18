@@ -29,10 +29,12 @@ void My_thread::run()
         W3::get_instance().get_now_pic();
         //我们需要在图片截图已经保存完成后再进行下面操作，要不然画面会卡
 
+        /*
         while(W3::get_instance().is_capture_done)
         {
             usleep(TIMER_TIME);
         }
+        */
         msleep(200);
         //已经获得图片啦
         W3::get_instance().m_buffer->open(QIODevice::ReadWrite);

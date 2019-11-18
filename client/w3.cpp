@@ -9,26 +9,14 @@
 #include <QPainter>
 #include <QPicture>
 
-
-//#include
-
-//extern int id_global;
 extern bool arimashida;
 extern QHostAddress my_ip;
 extern unsigned short my_port;
 
 void W3::when_captured(int id, QImage image)
 {
-    //ui->label->setPixmap(QPixmap::fromImage(image));//将图片打印至那个B之上
-    //当接收到imagecaputred时，将QImage保存到picpic上
-    //static int i = 0;
-    //uchar *image_uchar = image.bits();
-    //qDebug() << image.size();
     *m_pic_pic = QPixmap::fromImage(image).scaledToWidth(480,Qt::FastTransformation).scaledToWidth(480, Qt::SmoothTransformation);
     is_capture_done = true;
-    //qDebug() << m_pic_pic->size();
-    //emit go_on_process_picpic();
-
 }
 
 W3::W3(QWidget *parent) :
@@ -39,19 +27,19 @@ W3::W3(QWidget *parent) :
     m_room_id = 0;
     m_pic_pic = new QPixmap;
     m_thread = new My_thread;
+
     //存放要发送的屏幕数据
     m_bytearray = new QByteArray;
     m_buffer = new QBuffer(m_bytearray);
     m_rocket_label = new QLabel(this);
-    //m_rocket_label->setText("这是火箭");
+
+    //处理火箭图片
     m_rocket_label->resize(150,300);
-    //m_rocket_label->setPixmap(QPixmap("/Users/yzh/Desktop/project/liveroom/client/pic/rocket.png"));
     m_rocket_label->setPixmap(QPixmap(":/pic/rocket.png"));
     m_rocket_label->setScaledContents(true);
     m_rocket_label->hide();
 
-
-
+    //处理观众表格
     ui->tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->tableWidget->setColumnWidth(0, 225);
@@ -63,38 +51,20 @@ W3::W3(QWidget *parent) :
 
     //截图相关
 #if 1
-    //到达缓冲区
+    //摄像头初始化
     m_camera=new QCamera;//摄像头
     m_viewfinder=new QCameraViewfinder(this);
     m_imageCapture=new QCameraImageCapture(m_camera);//截图部件
-
-
     m_imageCapture->setCaptureDestination(QCameraImageCapture::CaptureToBuffer);
-
-
     QImageEncoderSettings image_setting;
     image_setting.setResolution(480, 270);
     m_imageCapture->setEncodingSettings(image_setting);
-
-#endif
-
-
-#if 0
-    //到达文件
-    m_camera=new QCamera;//摄像头
-    m_viewfinder=new QCameraViewfinder(this);
-    m_imageCapture=new QCameraImageCapture(m_camera);//截图部件
-    m_imageCapture->setCaptureDestination(QCameraImageCapture::CaptureToFile);
-    m_camera->setCaptureMode(QCamera::CaptureStillImage);
-#endif
-
     m_camera->setViewfinder(m_viewfinder);
+#endif
 
-    //connect(m_imageCapture, SIGNAL(imageCaptured(int id, const QImage& image)),
-    //                    this, SLOT(when_captured()));
+    //连接几个槽函数
     connect(m_imageCapture, SIGNAL(imageCaptured(int, const QImage&)),
                             this, SLOT(when_captured(int, QImage)));
-
     connect(this, SIGNAL(please_stop_capture()), m_imageCapture, SLOT(cancelCapture()));
     connect(ui->msg_le, SIGNAL(returnPressed()), this, SLOT(on_send_pb_clicked()));
 
@@ -135,45 +105,26 @@ void W3::closeEvent(QCloseEvent *event)
     QCloseEvent* slience = event;
     event = slience;
 
-    //qDebug() << "wtf1";
-
     //断开直播
     if(m_is_caster)
     {
         W3::get_instance().get_thread()->terminate();
         W3::get_instance().get_thread()->wait();
     }
-    //qDebug() <<"wtf2";
+
+    //关闭摄像头与屏幕捕捉
     m_viewfinder->setParent(nullptr);
-    //qDebug() <<"wtf3";
     m_camera->stop();
-    //qDebug() <<"wtf4";
     emit please_stop_capture();
 
-//    delete m_thread;
-//    delete m_camera;
-//    delete m_viewfinder;
-//    delete m_imageCapture;
-
-
-//    if(m_is_caster)
-//    {
-//        W3::get_instance().get_thread().exit();
-//        if(!W3::get_instance().get_thread().wait(1))
-//        {
-//            W3::get_instance().get_thread().terminate();
-//            W3::get_instance().get_thread().wait();
-//        }
-//    }
-    //qDebug() << "wtf2";
     //告诉UDP 爷走了， 把爷删了
     Udp_pro updu;
     memset(&updu, 0, sizeof(Udp_pro));
     updu.id = W1::get_instance().get_id();
     updu.is_getout = true;
     W3::get_instance().send_udp_to_server(&updu);
-    //qDebug() << "wtf3";
-    //告诉服务器，登出
+
+    //告诉tcp服务器，登出
     Protocol pdu;
     memset(&pdu, 0 ,sizeof(pdu));
     pdu.msg_type = QUIT_ROOM_TYPE;
@@ -182,14 +133,10 @@ void W3::closeEvent(QCloseEvent *event)
     pdu.room_id = m_room_id;
     pdu.isevent = true;
     W1::get_instance().get_socket_tcp().write((char*)&pdu, sizeof(pdu));
-    //qDebug() << "wtf4";
-    //QWaitCondition wait;
-    //wait.wait(1);
-    //std::usleep(5000);
+
     //登出
     W1::get_instance().logout_fun();
     //qDebug() << "wtf5";
-    //向服务器发送离开room
 
 }
 
@@ -275,6 +222,225 @@ void W3::get_now_pic()
     m_imageCapture->capture();
 }
 
+
+
+void W3::better_go_out()
+{
+    m_viewfinder->setParent(nullptr);
+    m_camera->stop();
+    emit please_stop_capture();
+}
+
+
+
+
+
+void W3::show_danmu(QString data)
+{
+
+}
+
+void W3::show_huojian()
+{
+//火箭火箭
+#if 1
+    m_timer_vec.clear();
+    m_rocket_label->setParent(this);
+    m_rocket_label->show();
+    m_rocket_label->raise();
+    m_ix = 500;
+    m_iy = 500;
+    m_rocket_label->move(m_ix, m_iy);
+    QTimer* timer = new QTimer();
+    m_timer_vec.push_back(timer);
+    timer->start(ROCKET_INTERVAL);
+    connect(timer, SIGNAL(timeout()), this , SLOT(rocket_move()));
+#endif
+
+}
+
+void W3::load_people()
+{
+    Protocol pdu;
+    memset(&pdu, 0 ,sizeof(pdu));
+    pdu.count = m_load_count;
+    pdu.msg_type = RELOAD_PEOPLE_TYPE;
+    pdu.room_id = m_room_id;
+    //qDebug()<< "create_pb_clicked" << pdu.id;
+    W1::get_instance().get_socket_tcp().write((char*)&pdu, sizeof(pdu));
+}
+
+void W3::count_plus_plus()
+{
+    m_load_count++;
+}
+
+void W3::insert_into_table(Protocol& pdu)
+{
+    ui->tableWidget->setRowCount(pdu.count+1);
+    QTableWidgetItem* ppid = new QTableWidgetItem;
+    QTableWidgetItem* ppusername = new QTableWidgetItem;
+    ppid->setText(QString("%1").arg(pdu.id));
+    ppusername->setText(QString(pdu.username));
+    ui->tableWidget->setItem(pdu.count, 0, ppid);
+    ui->tableWidget->setItem(pdu.count,1, ppusername);
+
+}
+
+void W3::reload_people()
+{
+    ui->tableWidget->setRowCount(0);
+    m_load_count = 0;
+    load_people();
+}
+
+QTextBrowser *W3::get_msg_tb()
+{
+    return ui->msg_tb;
+}
+
+void W3::set_rocket_label()
+{
+    m_rocket_label->setParent(ui->msg_tb);
+    m_rocket_label->setWindowFlag(Qt::WindowStaysOnTopHint);
+}
+
+void W3::unset_rocket_label()
+{
+    m_rocket_label->setParent(nullptr);
+}
+
+void W3::unset_msg_tb()
+{
+    ui->msg_tb->hide();
+}
+
+
+void W3::set_msg_tb()
+{
+    ui->msg_tb->show();
+}
+
+
+
+void W3::on_quit_pb_clicked()
+{
+
+    ui->pic_label->show();
+    m_viewfinder->setParent(nullptr);
+    m_camera->stop();
+    emit please_stop_capture();
+    m_buffer->close();
+
+
+    //杀死线程，告诉线程结束
+    arimashida = false;
+
+
+    //告诉UDP 爷走了， 把爷删了
+    Udp_pro updu;
+    memset(&updu, 0, sizeof(Udp_pro));
+    updu.id = W1::get_instance().get_id();
+    updu.room_id = m_room_id;
+    updu.is_getout = true;
+    W3::get_instance().send_udp_to_server(&updu);
+
+    W3::get_instance().clear_chat_text();
+
+    //取消绑定
+    //if(Udp_socket::get_instance().get_udp_socket().
+
+    //向服务器发送离开room
+    Protocol pdu;
+    memset(&pdu, 0 ,sizeof(pdu));
+    pdu.msg_type = QUIT_ROOM_TYPE;
+    pdu.id = W1::get_instance().get_id();
+    pdu.result = m_is_caster;
+    pdu.room_id = m_room_id;
+    pdu.isevent = false;
+    W1::get_instance().get_socket_tcp().write((char*)&pdu, sizeof(pdu));
+}
+
+void W3::on_send_pb_clicked()
+{
+    QString msg = ui->msg_le->text();
+    if(msg.size() > 100)
+    {
+        QMessageBox::information(this, "发送", "请输入少于100字节");
+        ui->msg_le->clear();
+    }
+
+    Protocol pdu;
+    memset(&pdu, 0 ,sizeof(pdu));
+    pdu.msg_type = GROUP_CHAT_TYPE;
+    pdu.id = W1::get_instance().get_id();
+    pdu.result = m_is_caster;
+    pdu.room_id = m_room_id;
+    strcpy(pdu.username, W1::get_instance().get_username());
+    strcpy(pdu.data, msg.toStdString().c_str());
+
+    W1::get_instance().get_socket_tcp().write((char*)&pdu, sizeof(pdu));
+    ui->msg_le->clear();
+}
+
+void W3::on_rocket_pb_clicked()
+{
+    Protocol pdu;
+    memset(&pdu, 0 ,sizeof(pdu));
+    pdu.msg_type = SEND_ROCKET_TYPE;
+    pdu.id = W1::get_instance().get_id();
+    pdu.result = m_is_caster;
+    pdu.room_id = m_room_id;
+    strcpy(pdu.username, W1::get_instance().get_username());
+
+    W1::get_instance().get_socket_tcp().write((char*)&pdu, sizeof(pdu));
+}
+
+void W3::rocket_move()
+{
+//让火箭动起来
+#if 1
+    if(m_iy > 0)
+    {
+        m_rocket_label->move(m_ix,m_iy);
+        update();
+        m_iy -= 15;
+
+        QTimer* timer = new QTimer();
+
+        timer->start(ROCKET_INTERVAL);
+        m_timer_vec.push_back(timer);
+        connect(timer, SIGNAL(timeout()), this , SLOT(rocket_move()));
+    }
+    else
+    {
+        int len = m_timer_vec.size();
+        for(int i = 0; i < len; i++)
+        {
+            delete m_timer_vec[i];
+        }
+        m_timer_vec.clear();
+        m_rocket_label->setParent(nullptr);
+    }
+#endif
+}
+
+
+
+
+
+
+
+
+
+void W3::on_refresh_people_pb_clicked()
+{
+    reload_people();
+}
+
+
+
+/*
 void W3::modify_updu_to_have_picdata(Udp_pro &updu)
 {
 #if 0
@@ -348,116 +514,14 @@ void W3::modify_updu_to_have_picdata(Udp_pro &updu)
     }
 #endif
 }
-
-void W3::better_go_out()
-{
-    //qDebug() <<"wtf2";
-    m_viewfinder->setParent(nullptr);
-    //qDebug() <<"wtf3";
-    m_camera->stop();
-    //qDebug() <<"wtf4";
-    emit please_stop_capture();
-}
-
-//将pic分割并打包发送至udp port+1
-void W3::pic_pic_handler_and_send()
-{
-    //处理图片并发送
-#if 0
-    while (true)
-    {
-        //已经获得图片啦
-        m_buffer->open(QIODevice::ReadWrite);
-        m_pic_pic->save(m_buffer, "png");
-
-        qint64 ret = 0;
-        qint64 iSended = 0;
-        qint64 iLefted = m_bytearray->size();
-        static const char *p = nullptr;
-        p = m_bytearray->constData();
-        qDebug() << "\n\n total size = " << iLefted;
-        while(iLefted)
-        {
-            if (iLefted > PIC_MAX_SIZE)
-            {
-                ret = Udp_socket::get_instance().get_udp_socket().
-                        writeDatagram(p+iSended, PIC_MAX_SIZE
-                            , QHostAddress(IP_ADDRESS), QString(UDPPORT).toUShort() +1 );
-            }
-            else
-            {
-                ret = Udp_socket::get_instance().get_udp_socket().
-                        writeDatagram(p+iSended, iLefted
-                            ,QHostAddress(IP_ADDRESS), QString(UDPPORT).toUShort() +1 );
-            }
-            if (0 == ret)
-            {
-                break;
-            }
-            else if (-1 == ret)
-            {
-                ret = 0;
-            }
-            else
-            {
-                iLefted -= ret;
-                iSended += ret;
-            }
-            usleep(TIMER_TIME);
-        }
-        m_pByteArray->clear();
-
-        qDebug() << "此次截屏总共发送的数据大小 = " << iSended;
-
-        m_pUdpSocket->writeDatagram("end", 3, QHostAddress(m_strIp), m_usPort);
-    }
-#endif
-
-
-#if 0
-    //测试发送wtf
-    *m_bytearray = QByteArray("wtf", 4);
-    static const char *p = nullptr;
-    p = m_bytearray->constData();
-    Udp_socket::get_instance().get_udp_socket().
-                                        writeDatagram(p, 4,
-                                        QHostAddress(IP_ADDRESS),
-                                        QString(UDPPORT).toUShort()+1);
-#endif
-}
-
-void W3::show_danmu(QString data)
-{
-
-}
-
-void W3::show_huojian()
-{
-
-//火箭火箭
-#if 1
-    m_timer_vec.clear();
-    m_rocket_label->setParent(this);
-    m_rocket_label->show();
-    m_rocket_label->raise();
-    m_ix = 500;
-    m_iy = 500;
-    m_rocket_label->move(m_ix, m_iy);
-    QTimer* timer = new QTimer();
-    m_timer_vec.push_back(timer);
-    timer->start(ROCKET_INTERVAL);
-    connect(timer, SIGNAL(timeout()), this , SLOT(rocket_move()));
+*/
 
 
 
 
 
-    //m_rocket_label->setPixmap(QPixmap("/Users/yzh/Desktop/project/liveroom/client/pic/rocket.jpg"));
-
-
-    //ui->msg_tb->show();
-
-#endif
+//火箭
+//{
 
 //可行方案
 #if 0
@@ -605,204 +669,75 @@ void W3::show_huojian()
     }
     ooo.run();
 #endif
-}
 
-void W3::load_people()
-{
-    Protocol pdu;
-    memset(&pdu, 0 ,sizeof(pdu));
-    pdu.count = m_load_count;
-    pdu.msg_type = RELOAD_PEOPLE_TYPE;
-    pdu.room_id = m_room_id;
-    //qDebug()<< "create_pb_clicked" << pdu.id;
-    W1::get_instance().get_socket_tcp().write((char*)&pdu, sizeof(pdu));
-}
-
-void W3::count_plus_plus()
-{
-    m_load_count++;
-}
-
-void W3::insert_into_table(Protocol& pdu)
-{
-    ui->tableWidget->setRowCount(pdu.count+1);
-    QTableWidgetItem* ppid = new QTableWidgetItem;
-    QTableWidgetItem* ppusername = new QTableWidgetItem;
-    ppid->setText(QString("%1").arg(pdu.id));
-    ppusername->setText(QString(pdu.username));
-    ui->tableWidget->setItem(pdu.count, 0, ppid);
-    ui->tableWidget->setItem(pdu.count,1, ppusername);
-
-}
-
-void W3::reload_people()
-{
-    ui->tableWidget->setRowCount(0);
-    m_load_count = 0;
-    load_people();
-}
-
-QTextBrowser *W3::get_msg_tb()
-{
-    return ui->msg_tb;
-}
-
-void W3::set_rocket_label()
-{
-    m_rocket_label->setParent(ui->msg_tb);
-    m_rocket_label->setWindowFlag(Qt::WindowStaysOnTopHint);
-}
-
-void W3::unset_rocket_label()
-{
-    m_rocket_label->setParent(nullptr);
-}
-
-void W3::unset_msg_tb()
-{
-    ui->msg_tb->hide();
-}
-
-
-void W3::set_msg_tb()
-{
-    ui->msg_tb->show();
-}
-
-
-
-void W3::on_quit_pb_clicked()
-{
-    //if(m_is_caster)
-    {
-        ui->pic_label->show();
-        m_viewfinder->setParent(nullptr);
-        m_camera->stop();
-        emit please_stop_capture();
-    }
-    //else //观众，做的,说个JB
-    {
-        //Udp_socket_audience::get_instance().get_udp_socket().close();
-    }
-
-    m_buffer->close();
-
-
-    //delete m_viewfinder;
-
-    //杀死线程，告诉线程结束
-    arimashida = false;
+//}
 
 
     /*
-    if(m_is_caster)
+    //将pic分割并打包发送至udp port+1
+    void W3::pic_pic_handler_and_send()
     {
-        W3::get_instance().get_thread().exit();
-        if(!W3::get_instance().get_thread().wait(1))
+        //处理图片并发送
+    #if 0
+        while (true)
         {
-            qDebug() << "wtf";
-            W3::get_instance().get_thread().terminate();
-            W3::get_instance().get_thread().wait();
+            //已经获得图片啦
+            m_buffer->open(QIODevice::ReadWrite);
+            m_pic_pic->save(m_buffer, "png");
+
+            qint64 ret = 0;
+            qint64 iSended = 0;
+            qint64 iLefted = m_bytearray->size();
+            static const char *p = nullptr;
+            p = m_bytearray->constData();
+            qDebug() << "\n\n total size = " << iLefted;
+            while(iLefted)
+            {
+                if (iLefted > PIC_MAX_SIZE)
+                {
+                    ret = Udp_socket::get_instance().get_udp_socket().
+                            writeDatagram(p+iSended, PIC_MAX_SIZE
+                                , QHostAddress(IP_ADDRESS), QString(UDPPORT).toUShort() +1 );
+                }
+                else
+                {
+                    ret = Udp_socket::get_instance().get_udp_socket().
+                            writeDatagram(p+iSended, iLefted
+                                ,QHostAddress(IP_ADDRESS), QString(UDPPORT).toUShort() +1 );
+                }
+                if (0 == ret)
+                {
+                    break;
+                }
+                else if (-1 == ret)
+                {
+                    ret = 0;
+                }
+                else
+                {
+                    iLefted -= ret;
+                    iSended += ret;
+                }
+                usleep(TIMER_TIME);
+            }
+            m_pByteArray->clear();
+
+            qDebug() << "此次截屏总共发送的数据大小 = " << iSended;
+
+            m_pUdpSocket->writeDatagram("end", 3, QHostAddress(m_strIp), m_usPort);
         }
+    #endif
+
+
+    #if 0
+        //测试发送wtf
+        *m_bytearray = QByteArray("wtf", 4);
+        static const char *p = nullptr;
+        p = m_bytearray->constData();
+        Udp_socket::get_instance().get_udp_socket().
+                                            writeDatagram(p, 4,
+                                            QHostAddress(IP_ADDRESS),
+                                            QString(UDPPORT).toUShort()+1);
+    #endif
     }
     */
-
-    //告诉UDP 爷走了， 把爷删了
-    Udp_pro updu;
-    memset(&updu, 0, sizeof(Udp_pro));
-    updu.id = W1::get_instance().get_id();
-    updu.room_id = m_room_id;
-    updu.is_getout = true;
-    W3::get_instance().send_udp_to_server(&updu);
-
-    W3::get_instance().clear_chat_text();
-
-    //取消绑定
-    //if(Udp_socket::get_instance().get_udp_socket().
-
-    //向服务器发送离开room
-    Protocol pdu;
-    memset(&pdu, 0 ,sizeof(pdu));
-    pdu.msg_type = QUIT_ROOM_TYPE;
-    pdu.id = W1::get_instance().get_id();
-    pdu.result = m_is_caster;
-    pdu.room_id = m_room_id;
-    pdu.isevent = false;
-    W1::get_instance().get_socket_tcp().write((char*)&pdu, sizeof(pdu));
-}
-
-void W3::on_send_pb_clicked()
-{
-    QString msg = ui->msg_le->text();
-    if(msg.size() > 100)
-    {
-        QMessageBox::information(this, "发送", "请输入少于100字节");
-        ui->msg_le->clear();
-    }
-
-    Protocol pdu;
-    memset(&pdu, 0 ,sizeof(pdu));
-    pdu.msg_type = GROUP_CHAT_TYPE;
-    pdu.id = W1::get_instance().get_id();
-    pdu.result = m_is_caster;
-    pdu.room_id = m_room_id;
-    strcpy(pdu.username, W1::get_instance().get_username());
-    strcpy(pdu.data, msg.toStdString().c_str());
-
-    W1::get_instance().get_socket_tcp().write((char*)&pdu, sizeof(pdu));
-    ui->msg_le->clear();
-}
-
-void W3::on_rocket_pb_clicked()
-{
-    Protocol pdu;
-    memset(&pdu, 0 ,sizeof(pdu));
-    pdu.msg_type = SEND_ROCKET_TYPE;
-    pdu.id = W1::get_instance().get_id();
-    pdu.result = m_is_caster;
-    pdu.room_id = m_room_id;
-    strcpy(pdu.username, W1::get_instance().get_username());
-
-    W1::get_instance().get_socket_tcp().write((char*)&pdu, sizeof(pdu));
-}
-
-void W3::rocket_move()
-{
-    if(m_iy > 0)
-    {
-        m_rocket_label->move(m_ix,m_iy);
-        update();
-        m_iy -= 15;
-
-        QTimer* timer = new QTimer();
-
-        timer->start(ROCKET_INTERVAL);
-        m_timer_vec.push_back(timer);
-        connect(timer, SIGNAL(timeout()), this , SLOT(rocket_move()));
-
-
-    }
-    else
-    {
-        int len = m_timer_vec.size();
-        for(int i = 0; i < len; i++)
-        {
-            delete m_timer_vec[i];
-        }
-        m_timer_vec.clear();
-        m_rocket_label->setParent(nullptr);
-    }
-}
-
-
-
-
-
-
-
-
-
-void W3::on_refresh_people_pb_clicked()
-{
-    reload_people();
-}

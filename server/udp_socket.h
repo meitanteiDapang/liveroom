@@ -7,6 +7,8 @@
 #include <QVector>
 
 
+//作为 a号端口, 客户端 发来的udp_pro，将他们的clientinfo 收集在vector中，完成在线的客户端的
+//udp ip与端口的收集与处理
 
 
 struct ClientInfo

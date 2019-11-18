@@ -5,6 +5,9 @@
 #include "my_socket_tcp.h"
 #include <QVector>
 
+
+//作为tcp server,储存所有客户端的tcp socket，并将所有收到数据 通过绑定分配到对应 socket
+
 class My_server_tcp : public QTcpServer
 {
     Q_OBJECT

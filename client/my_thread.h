@@ -3,6 +3,11 @@
 
 #include <QThread>
 #include <QEventLoop>
+
+
+//作为主播发送视频流时将使用此线程
+
+
 class My_thread : public QThread
 {
     Q_OBJECT

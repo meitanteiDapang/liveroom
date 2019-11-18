@@ -21,7 +21,7 @@ SOURCES += \
     main.cpp \
     my_server_tcp.cpp \
     my_socket_tcp.cpp \
-    my_thread.cpp \
+    #my_thread.cpp \
     protocol.cpp \
     udp_socket.cpp \
     udp_socket_stream.cpp \
@@ -32,7 +32,7 @@ HEADERS += \
     db_handler.h \
     my_server_tcp.h \
     my_socket_tcp.h \
-    my_thread.h \
+    #my_thread.h \
     protocol.h \
     udp_socket.h \
     udp_socket_stream.h \

@@ -47,39 +47,61 @@ public:
 
     explicit W3(QWidget *parent = nullptr);
     ~W3();
-    static W3 &get_instance();
-    void start_camera_selfie();
-
-    void being_caster();
-    void being_audience();
     virtual void closeEvent(QCloseEvent *event);
-    int get_room_id();
-    void set_room_id(int id);
-    bool get_is_caster();
+
+    //获得私有成员变量
+    static W3 &get_instance();
+    QTextBrowser* get_msg_tb();
     QCamera* get_camera();
-    void add_chat_text(QString data);
-    void clear_chat_text();
+    bool get_is_caster();
+    int get_room_id();
     QCameraViewfinder* get_viewfinder();
     QString get_room_name();
+    My_thread* get_thread();
+
+    //修改私有成员变量
+    void being_caster();
+    void being_audience();
+    void set_room_id(int id);
     void set_room_name(QString room_name);
     void add_room_name_test(QString room_name);
 
+    //开始自拍的一些操作
+    void start_camera_selfie();
+
+
+    void add_chat_text(QString data);
+    void clear_chat_text();
     void send_udp_to_server(Udp_pro* updu);
-    My_thread* get_thread();
-    //My_thread_audience& get_thread_audience();
-    //My_thread_audience_read& get_thread_audience_read();
     void show_live_data(QByteArray b);
+
+    //发送截屏信号
     void get_now_pic();
-    void modify_updu_to_have_picdata(Udp_pro& updu);
+
+    //退出时，对摄像头及组件做一些处理
     void better_go_out();
-    void pic_pic_handler_and_send();
+
+    //展示弹幕（未完成)
     void show_danmu(QString data);
+
+    //火箭图片发生
     void show_huojian();
+
+    //向服务器发送加载直播间内人信息
     void load_people();
+
+    //让m_count_count++
     void count_plus_plus();
+
+    //利用pdu操作增加人列表
     void insert_into_table(Protocol& pdu);
+
+    //刷新重载 人列表 发起函数
     void reload_people();
-    QTextBrowser* get_msg_tb();
+
+
+
+    //msg_tb与rocket_label互相整活
     void set_msg_tb();
     void unset_msg_tb();
     void set_rocket_label();
@@ -111,13 +133,9 @@ private:
     int m_load_count;
     int m_rows_num;
     QLabel* m_rocket_label;
-    Rocket_thread m_rocket_thread;
     QVector<QTimer*> m_timer_vec;
     int m_ix;
     int m_iy;
-    //My_thread_audience m_thread_audience;
-    //My_thread_audience_read m_thread_audience_read;
-
 };
 
 #endif // W3_H

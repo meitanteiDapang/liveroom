@@ -26,7 +26,11 @@ public:
     void set_id(int id);
     char* get_username();
     void set_username(char* username);
+
+    //向udp发送我作为观众我进来了，在udp服务器中注册端口与ip
     void tell_udp_i_am_in();
+
+    //向udp发送我作为主播我进来了，在udp服务器中注册端口与ip
     void tell_udp_caster_in();
 
 public slots:

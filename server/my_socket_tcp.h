@@ -5,6 +5,7 @@
 #include "protocol.h"
 #include "common.h"
 
+//作为对应每一个客户端的tcp socket，集中处理所有从对应客户端发来的tcp请求
 
 class My_socket_tcp:public QTcpSocket
 {

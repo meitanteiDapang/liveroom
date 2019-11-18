@@ -8,7 +8,8 @@
 #include "udp_socket.h"
 
 
-
+//作为观众进入房间时，使用此socket向服务器发送信息并注册
+//同时接受服务器转发的视频流，并处理流数据 展示在W3 中
 
 
 class Udp_socket_audience : public QWidget

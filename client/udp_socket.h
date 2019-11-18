@@ -7,7 +7,8 @@
 #include <QVector>
 
 
-
+//作为主播，使用此udp向服务器注册并发送 视频流
+//无接受任务
 
 struct ClientInfo
 {
